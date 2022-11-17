@@ -4,7 +4,7 @@ import { Coords } from "google-map-react";
 
 interface SearchRequirements {
 	keyword: string;
-	userMap: any;
+	userMap: any | null;//defined in google maps react types unfortunately
 	coordinates: Coords;
 }
 
@@ -13,12 +13,14 @@ const searchByKeyword = (requirements: SearchRequirements) => {
 
 	const loggingTag = `[searchByKeyword][${requirements.keyword}]`;
 	return new Promise<google.maps.places.PlaceResult[] | object>((resolve, reject) => {
-		const service = new google.maps.places.PlacesService(userMap);
+
+		const service = new google.maps.places.PlacesService(userMap),
+			boundsforCurrentMap = userMap.getBounds();
+
+		console.info(`${loggingTag} bounds`, boundsforCurrentMap);
 		service.nearbySearch({
 			keyword,
-			location: coordinates,
-			radius: 250,
-			// openNow: true,
+			bounds: boundsforCurrentMap,//added search by current bounds of the map 11.17.22 KL
 			type: "point_of_interest"
 		}, (
 			results: google.maps.places.PlaceResult[] | null,
