@@ -176,7 +176,7 @@ const MapView = (props = {left : 0}) => {
         >
             <GoogleMapReact
                 bootstrapURLKeys={{
-                    key: 'AIzaSyAi193RzMZbOL6axK3hTrBSzUtzcfXFiHM',
+                    key: 'AIzaSyAsicyXxjlKdmikI3FSeNCiPbILUC4lmzA',
                     libraries: ['places']
                 }}
                 center={coordinates}
