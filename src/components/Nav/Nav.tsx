@@ -11,10 +11,11 @@ interface NavItemProps {
 const NavItem = (props: NavItemProps) => {
     const {mode} = props;
     const {mode:activeMode, updateMode} = useContext(NavCtx);
+
     console.info(`[Nav] mode`, activeMode);
     return (
         <ListItemButton
-            onClick={()=>{updateMode(mode.id)}}
+            onClick={()=>{updateMode(mode);console.info(`active mode: ${activeMode.id}, mode: ${mode.id}`)}}
         >
             <ListItemText
                 sx={{
@@ -48,7 +49,7 @@ const Nav = (props : NavProps) => {
         >
              <List>
                  {
-                     appModes.map((mode, index: number) => (
+                     appModes.map((mode: Mode, index: number) => (
                        <NavItem
                            key={`${mode.id}-${index}`}
                            mode={mode}

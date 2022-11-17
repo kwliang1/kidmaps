@@ -91,6 +91,7 @@ const NavContextProvider = (props: React.PropsWithChildren) => {
     const [mode, setMode] = useState(initialMode);
 
     const updateMode = useCallback((newMode: Mode) => {
+        console.info(`setting new mode!`, newMode);
         setMode(newMode);
     }, []);
 
