@@ -51,31 +51,9 @@ const appModes: Mode[] = [
     {
         name: "Restaurants",
         id: "restaurants",
-        keyword: "burritos"
+        keyword: "restaurants"
     }
 ]
-
-
-class Navigation {
-    _modes:Array<Mode>;
-    constructor(){
-        this._modes = [
-            new AppMode("parks", "Parks", "parks")
-        ]
-    }
-    getModeByID(id:string) {
-        let result;
-        console.info(`modes`, this._modes);
-        this._modes.every((mode:Mode) => {
-            console.info(`id: ${id} mode_id: ${mode.id}`);
-            if(mode.id === id){
-                console.info(`returning id: ${mode}`);
-                result = mode;
-            }
-        })
-        return result;
-    }
-}
 
 const defaultNavContext: NavigationContextInterface = {
     mode: appModes[0],
@@ -85,7 +63,6 @@ const defaultNavContext: NavigationContextInterface = {
 const NavCtx = createContext<NavigationContextInterface>(defaultNavContext as NavigationContextInterface);
 
 const NavContextProvider = (props: React.PropsWithChildren) => {
-    const navigation = new Navigation();
     const initialMode = appModes[0]
     console.info(`initial mode`, initialMode);
     const [mode, setMode] = useState(initialMode);

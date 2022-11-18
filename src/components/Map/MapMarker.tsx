@@ -56,7 +56,10 @@ const MapMarker = ({text = 'You', type = '', lat = 0, lng = 0} = {}) => {
                     alignItems: "center",
                     transform: 'translate(-50%, -50%)',
                     backgroundColor: marker.bg_color,
-                    borderRadius: '50%'
+                    borderRadius: '50%',
+                    ':hover': {
+                        cursor: "pointer"
+                    }
                 }}
             >
                 {marker.icon}

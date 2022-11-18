@@ -17,7 +17,7 @@ const searchByKeyword = (requirements: SearchRequirements) => {
 		const service = new google.maps.places.PlacesService(userMap),
 			boundsforCurrentMap = userMap.getBounds();
 
-		console.info(`${loggingTag} bounds`, boundsforCurrentMap);
+		// console.info(`${loggingTag} bounds`, boundsforCurrentMap);
 		service.nearbySearch({
 			keyword,
 			bounds: boundsforCurrentMap,//added search by current bounds of the map 11.17.22 KL

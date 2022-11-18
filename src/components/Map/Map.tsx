@@ -66,9 +66,9 @@ const MapView = (props = {left : 0}) => {
             console.info(`setting coordinates to lat:${lat} long:${lng}`);
 
             const coordinates = {
-                    lat,
-                    lng
-                };
+                lat,
+                lng
+            };
 
             position.current = coordinates;//this will update the class, as well as the local storage key to be retrieved at a later time 11.2.22 KL
             setCoordinates(coordinates);
@@ -161,7 +161,7 @@ const MapView = (props = {left : 0}) => {
       console.info(`on drag`, map);
       //noe to KL, if destinations are not undefined, it will pass the first check below
       if(destinations && destinations.length > 0){
-          setDestinations(destinations);
+          setDestinations(undefined);
       }
     }, [destinations]);
 

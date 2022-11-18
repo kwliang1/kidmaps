@@ -41,6 +41,10 @@ const Nav = (props : NavProps) => {
             anchor={"left"}
             sx={{
                 width,
+                display: {
+                    xs: "none",
+                    sm: "block"
+                },
                 flexShrink: 0,
                 '& .MuiDrawer-paper': {
                     width
