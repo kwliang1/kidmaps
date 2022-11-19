@@ -4,39 +4,11 @@ import {Box, Snackbar, Button, IconButton} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import GoogleMapReact, {ChangeEventValue, Coords, Maps} from "google-map-react";
 import MapMarker from "./MapMarker";
+import MapStatus from "../MapStatus/MapStatus";
 import React, {useContext, useEffect, useState, useCallback} from "react";
-import {searchForBathrooms, searchForIceCream, searchForParks, UserLocation} from "../../../utils/Locations";
-import {NavCtx, Mode} from "../../providers/Navigation/Navigation";
-
-const SearchStatus = (props: React.ComponentProps<any>) => {
-    const {message} = props;
-    const [open, setOpen] = useState(true);
-
-    const handleClose = () => {
-        setOpen(false);
-    }
-    const action = (
-        <React.Fragment>
-            <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleClose}
-            >
-                <CloseIcon fontSize="small" />
-            </IconButton>
-        </React.Fragment>
-    );
-
-    return (
-        <Snackbar
-            open={open}
-            autoHideDuration={2500}
-            message={message}
-            action={action}
-        />
-    )
-}
+import {searchByKeyword} from "../../../utils/Locations";
+import { UserCtx } from "../../providers/User/User";
+import { NavCtx } from "../../providers/Navigation/Navigation";
 
 interface Destination {
     text: string | undefined;
@@ -45,42 +17,21 @@ interface Destination {
     lng: number;
 }
 
-const MapView = (props = {left : 0}) => {
+const MapView = (props: React.ComponentProps<any> = {left : 0}) => {
 
-    const position = new UserLocation();
-    console.info(`position:`, position.coordinates);
+    const userContext = useContext(UserCtx);
     const {mode} = useContext(NavCtx);
     console.info(`current user mode`, mode);
 
     const [destinations, setDestinations] = useState<Destination[] | undefined>();
-    const [coordinates, setCoordinates] = useState(position.coordinates);
-    const [userMap, setMap] = useState(null);
+    const [coordinates, setCoordinates] = useState<Coords>(userContext.location.coordinates);
+    const [userMap, setMap] = useState<google.maps.Map | undefined>();
     const [searchStatus, setSearchStatus] = useState<boolean | string>(false);
-
-    const gotUserLocation = (result: any) => {
-        const loggingTag = `[gotUserLocation]`;
-        try{
-            console.info(`user location result`, result);
-            const {coords} = result,
-                {latitude:lat, longitude:lng} = coords;
-            console.info(`setting coordinates to lat:${lat} long:${lng}`);
-
-            const coordinates = {
-                lat,
-                lng
-            };
-
-            position.current = coordinates;//this will update the class, as well as the local storage key to be retrieved at a later time 11.2.22 KL
-            setCoordinates(coordinates);
-        } catch(e){
-            console.error(`${loggingTag} Error:`, e);
-        }
-    }
 
     useEffect(() => {
         if(navigator.geolocation){
             console.info(`already have the user's location permission!`);
-            navigator.geolocation.getCurrentPosition(gotUserLocation);
+            userContext.location.getFromBrowser();
             //setting the user's coordinates
         } else {
             console.error(`don't have the user's permission. ruh roh`);
@@ -92,23 +43,26 @@ const MapView = (props = {left : 0}) => {
 
         if(userMap){//only call this function is usermap is available
             try{
-                const results = mode.id === "bathrooms" ? await searchForBathrooms({keyword:mode.keyword ,userMap, coordinates}) :
-                    mode.id === "ice_cream" ? await searchForIceCream({keyword:mode.keyword, userMap, coordinates}) :
-                        mode.id === "restaurants" ? await searchForIceCream({keyword:mode.keyword, userMap, coordinates}) :
-                            await searchForParks({keyword: "parks", userMap, coordinates});
 
+                let mapViewSearchRequirements = {
+                    map:userMap,
+                    request_options:{
+                        keyword: mode.keyword,
+                        type: mode.type,
+                        bounds: userMap.getBounds()
+                    }
+                };
+
+                const results = await searchByKeyword(mapViewSearchRequirements);
                 console.info(`results`, results);
                 const newDestinations = Array.isArray(results) ? results.map((result: google.maps.places.PlaceResult) => {
-
                     console.info(`mode: ${mode}`);
-
                     return {
                         text: typeof result.name === "string" ? result.name : '',
                         type: mode.id,
                         lat: result?.geometry?.location ? result.geometry.location.lat() : 0,
                         lng: result?.geometry?.location ? result.geometry.location.lng() : 0
                     }
-
                 }) : [];
                 console.info(`new destinations`, newDestinations);
                 setDestinations(newDestinations);
@@ -131,14 +85,12 @@ const MapView = (props = {left : 0}) => {
     }, [userMap, coordinates, getDestinations]);
 
     const defaultProps = {
-        center: coordinates,
         zoom: 17
     };
 
     const mapLayers = ['TransitLayer'];
 
     // @ts-ignore
-    // KL added the ts-ignore because it's a bug associated with the type defined by google maps (any)
     const handleGoogleApiResponse = ({map} = {}) => {
         //this is the "on load" event of the Google API js lib.
         //"maps" is a reference to the maps API object
@@ -176,7 +128,7 @@ const MapView = (props = {left : 0}) => {
         >
             <GoogleMapReact
                 bootstrapURLKeys={{
-                    key: 'AIzaSyAsicyXxjlKdmikI3FSeNCiPbILUC4lmzA',
+                    key: process.env.NEXT_PUBLIC_GOOG_MAPS_API_KEY,
                     libraries: ['places']
                 }}
                 center={coordinates}
@@ -197,7 +149,7 @@ const MapView = (props = {left : 0}) => {
                     />
                 )):<></>}
             </GoogleMapReact>
-            {searchStatus ? <SearchStatus message={searchStatus}/> : <></>}
+            {searchStatus ? <MapStatus message={searchStatus}/> : <></>}
         </Box>
     )
 }

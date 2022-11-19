@@ -3,26 +3,32 @@
 import { Coords } from "google-map-react";
 
 interface SearchRequirements {
+	request_options: SearchRequestOptions;
+	map: any | null;//defined in google maps react types unfortunately
+}
+
+interface SearchRequestOptions {
 	keyword: string;
-	userMap: any | null;//defined in google maps react types unfortunately
-	coordinates: Coords;
+	type: string;
+	bounds?: google.maps.LatLngBounds;
+	location?: Coords | google.maps.LatLng;
+	radius?: number;
 }
 
 const searchByKeyword = (requirements: SearchRequirements) => {
-	const {keyword, userMap, coordinates} = requirements;
-
-	const loggingTag = `[searchByKeyword][${requirements.keyword}]`;
+	const {map} = requirements;
+	const loggingTag = `[searchByKeyword][${requirements.request_options.keyword}]`;
 	return new Promise<google.maps.places.PlaceResult[] | object>((resolve, reject) => {
 
-		const service = new google.maps.places.PlacesService(userMap),
-			boundsforCurrentMap = userMap.getBounds();
+		const service = new google.maps.places.PlacesService(map),
+			options = {
+				...requirements.request_options,
+				type: "point_of_interest"
+			};
 
-		// console.info(`${loggingTag} bounds`, boundsforCurrentMap);
-		service.nearbySearch({
-			keyword,
-			bounds: boundsforCurrentMap,//added search by current bounds of the map 11.17.22 KL
-			type: "point_of_interest"
-		}, (
+		console.info(`${loggingTag} final request options`, options);
+
+		service.nearbySearch(options, (
 			results: google.maps.places.PlaceResult[] | null,
 			status: google.maps.places.PlacesServiceStatus,
 			pagination: google.maps.places.PlaceSearchPagination | null
@@ -37,7 +43,7 @@ const searchByKeyword = (requirements: SearchRequirements) => {
 					return;
 				}
 				console.info(`${loggingTag} resp`, results);
-				if(keyword === "bathrooms"){
+				if(options.keyword === "bathrooms"){
 					const filteredResults = results.filter((place: google.maps.places.PlaceResult) => {
 						const bathroomPlaceTypes = ["point_of_interest", "establishment"];
 						return typeof place.types === "object" && place.types.length === bathroomPlaceTypes.length && place.types.every((value, index) => value === bathroomPlaceTypes[index]);
@@ -53,66 +59,4 @@ const searchByKeyword = (requirements: SearchRequirements) => {
 	});
 }
 
-const searchForBathrooms = async (requirements:SearchRequirements) => {
-	const loggingTag = `[searchForBathrooms]`;
-	return await searchByKeyword(requirements);
-}
-
-const searchForParks = async (requirements:SearchRequirements) => {
-	const loggingTag = `[searchForParks]`;
-	return await searchByKeyword(requirements);
-}
-
-const searchForIceCream = async (requirements:SearchRequirements) => {
-	const loggingTag = `[searchForBathrooms]`;
-	return await searchByKeyword(requirements);
-}
-
-const searchForRestaurants = async (requirements:SearchRequirements) => {
-	const loggingTag = `[searchForRestaurants]`;
-	return await searchByKeyword(requirements);
-}
-
-
-class UserLocation {
-	private readonly _localstorage_key: string;
-	private _coordinates: Coords;
-	constructor() {
-		this._localstorage_key = `last_known_user_location`;
-		this._coordinates = this.getLastKnownLocation();
-	}
-
-	get coordinates(){
-		return this._coordinates;
-	}
-
-	set current(location:Coords){
-		this._coordinates = location;
-		this.cacheUserLastKnownLocation(location);
-	}
-
-	getLastKnownLocation(){
-		let coordinates = {
-			lat: 0,
-			lng: 0
-		}
-		try{
-			if(typeof localStorage !== "undefined"){
-				const locationStr = localStorage.getItem(this._localstorage_key);
-				if(locationStr !== null){
-					coordinates = JSON.parse(locationStr);
-				}
-			}
-		} catch(e){
-			console.error(`Unable to get the user's last location: `, e);
-		}
-		return coordinates;
-	}
-
-	cacheUserLastKnownLocation(location : Coords){
-		//need to store a string in LS 10.31.22 KL
-		localStorage.setItem(this._localstorage_key, JSON.stringify(location));
-	}
-}
-
-export {searchForParks, searchForBathrooms, searchForIceCream, searchForRestaurants, UserLocation};
+export {searchByKeyword};

@@ -6,13 +6,15 @@ import { Box } from "@mui/material";
 import Nav from "../src/components/Nav/Nav";
 import Map from "../src/components/Map/Map";
 import { NavContextProvider } from "../src/providers/Navigation/Navigation";
+import {UserContextProvider} from "../src/providers/User/User";
+import DestinationList from "../src/components/DestinationList/DestinationList";
 
 const navWidth = 200;
 
 const Home: NextPage = () => {
     const [hydrated, setHydrated] = useState(false);
     const isTabletOrMobile = useMediaQuery(
-{query: '(max-width: 1224px)'},
+{maxWidth:1224, orientation: "portrait"},
 hydrated ? undefined : { width: 1224 }
     );
 
@@ -22,18 +24,20 @@ hydrated ? undefined : { width: 1224 }
 
     return (
       <NavContextProvider>
-          {
-              isTabletOrMobile ? (
-                  <Box>wah</Box>
-              ):(
-                  <Box
-                      sx={{display: "flex"}}
-                  >
-                      <Nav width={navWidth}/>
-                      <Map left={navWidth}/>
-                  </Box>
-              )
-          }
+          <UserContextProvider>
+              {
+                  isTabletOrMobile ? (
+                      <DestinationList/>
+                  ):(
+                      <Box
+                          sx={{display: "flex"}}
+                      >
+                          <Nav width={navWidth}/>
+                          <Map left={navWidth}/>
+                      </Box>
+                  )
+              }
+          </UserContextProvider>
       </NavContextProvider>
     )
 }

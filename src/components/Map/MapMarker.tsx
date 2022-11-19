@@ -30,7 +30,7 @@ class Marker {
     get icon(){
         if(this._type === "parks"){
             return <Park sx={{color:this._color}}/>
-        } else if (this._type === "bathroom"){
+        } else if (this._type === "bathrooms"){
             return <Wc sx={{color:this._color}}/>
         } else if (this._type === "ice_cream"){
             return <Icecream sx={{color: this._color}}/>

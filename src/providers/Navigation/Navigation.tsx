@@ -2,58 +2,43 @@ import React from "react";
 import { useState, createContext, useCallback, useMemo} from "react";
 
 export interface Mode {
-    id: string,
-    name: string,
-    keyword: string
-}
-export class AppMode implements Mode {
-    _id: string;
-    _name: string;
-    _keyword: string;
-    constructor(id: string, name: string, keyword: string) {
-        this._id = id;
-        this._name = name;
-        this._keyword = keyword;
-    }
-
-    get id(){
-        return this._id;
-    }
-    get name(){
-        return this._name;
-    }
-    get keyword(){
-        return this._keyword;
-    }
-}
-
-interface NavigationContextInterface {
-    mode: Mode;
-    updateMode: Function;
+    id: string;
+    name: string;
+    keyword: string;
+    type: string;
 }
 
 const appModes: Mode[] = [
     {
         name: "Parks",
         id: "parks",
-        keyword: "parks"
+        keyword: "parks",
+        type: "park"
     },
     {
         name: "Bathrooms",
         id: "bathrooms",
-        keyword: "bathrooms"
+        keyword: "bathrooms",
+        type: "point_of_interest"
     },
     {
         name: "Ice Cream",
         id: "ice_cream",
-        keyword: "ice cream"
+        keyword: "ice cream",
+        type: "restaurant"
     },
     {
         name: "Restaurants",
         id: "restaurants",
-        keyword: "restaurants"
+        keyword: "restaurants",
+        type: "restaurant"
     }
 ]
+
+interface NavigationContextInterface {
+    mode: Mode;
+    updateMode: Function;
+}
 
 const defaultNavContext: NavigationContextInterface = {
     mode: appModes[0],
