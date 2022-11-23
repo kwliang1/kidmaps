@@ -4,9 +4,11 @@ import {Coords} from "google-map-react";
 class UserLocation {
     private readonly _localstorage_key: string;
     private _coordinates: Coords;
+    _permission: UserLocationPermission;
     constructor() {
         this._localstorage_key = `last_known_user_location`;
         this._coordinates = this.getLastKnownLocation();
+        this._permission = new UserLocationPermission();
     }
 
     get coordinates():Coords{
@@ -19,6 +21,7 @@ class UserLocation {
     }
 
     getLastKnownLocation(){
+        //default coordinates value
         let coordinates = {
             lat: 0,
             lng: 0
@@ -41,26 +44,68 @@ class UserLocation {
         localStorage.setItem(this._localstorage_key, JSON.stringify(location));
     }
 
-    getFromBrowser() : void {
-        if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(
-                (result: GeolocationPosition) => {
-                    console.info(`user location result`, result);
-                    const {coords} = result,
-                        {latitude:lat, longitude:lng} = coords;
-                    console.info(`setting coordinates to lat:${lat} long:${lng}`);
-                    this.current = {
-                        lat,
-                        lng
-                    };//this will update the class, as well as the local storage key to be retrieved at a later time 11.2.22 KL
-                },
-                (positionError: GeolocationPositionError) => {
-                    console.error(`Error occurred getting user location`, positionError);
+    getFromBrowser(): Promise<Coords|GeolocationPositionError|Error> {
+        return new Promise((resolve, reject)=> {
+            if(navigator.geolocation){//just checks if it's been supported
+                const permissionStatus = this._permission.status;
+                if(permissionStatus === "unknown"){
+                    this._permission.getCurrentStatusFromBrowser()
+                        .then(() => {
+                          this.getFromBrowser();//recursively call itself
+                        })
+                } else if (permissionStatus.state === "denied"){
+
+                } else {//granted or prompt
+                    navigator.geolocation.getCurrentPosition(
+                        (result: GeolocationPosition) => {
+                            console.info(`user location result`, result);
+                            const {coords} = result,
+                                {latitude:lat, longitude:lng} = coords;
+                            console.info(`setting coordinates to lat:${lat} long:${lng}`);
+                            this.current = {
+                                lat,
+                                lng
+                            };//this will update the class, as well as the local storage key to be retrieved at a later time 11.2.22 KL
+                            resolve(this.current);
+                        },
+                        (positionError: GeolocationPositionError) => {
+                            console.error(`Error occurred getting user location`, positionError);
+                            reject(positionError);
+                        }
+                    )
                 }
-            )
-        } else {
-            console.error(`navigator.geolocation not available`);
-        }
+            } else {
+                const errMessage = 'navigator.geolocation not available';
+                console.error(errMessage);
+                reject(new Error(errMessage));
+            }
+        });
+    }
+
+}
+
+class UserLocationPermission {
+    status: PermissionStatus | "unknown";
+    _name: PermissionName;
+    constructor() {
+        this._name = "geolocation";
+        this.status = 'unknown';
+    }
+    getCurrentStatusFromBrowser():Promise<PermissionStatus|Error>{
+        return new Promise((resolve, reject) => {
+            if(navigator.permissions){
+                navigator.permissions.query({name: this._name})
+                    .then((status) => {
+                        this.status = status;
+                        resolve(status);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    })
+            } else {
+                reject(new Error('Navigator Permission not supported'))
+            }
+        })
     }
 }
 

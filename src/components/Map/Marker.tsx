@@ -2,7 +2,7 @@ import {Box, Tooltip} from "@mui/material";
 import {Stroller, LocalDining, Park, Wc, Icecream} from "@mui/icons-material";
 import {red} from '@mui/material/colors';
 
-class Marker {
+class MarkerStyles {
     private readonly _color = "#FFFFFF";
     private readonly _type:string;
     constructor(type:string) {
@@ -42,9 +42,9 @@ class Marker {
     }
 }
 
-const MapMarker = ({text = 'You', type = '', lat = 0, lng = 0} = {}) => {
+const Marker = ({text = 'You', type = '', lat = 0, lng = 0} = {}) => {
     // console.info(`mapmarker type: ${type}`);
-    const marker = new Marker(type);
+    const marker = new MarkerStyles(type);
     // console.info(`marker color: ${marker.color} type: ${marker.type}`);
     return (
         <Tooltip title={text}>
@@ -68,4 +68,4 @@ const MapMarker = ({text = 'You', type = '', lat = 0, lng = 0} = {}) => {
     )
 }
 
-export default MapMarker;
+export default Marker;

@@ -18,7 +18,7 @@ const NavItem = (props: NavItemProps) => {
     const [isActive, setIsActive] = useState<boolean>(false);
 
     useEffect(() => {
-        console.info(`${loggingTag} is active? `, activeMode.id === mode.id);
+        // console.info(`${loggingTag} is active? `, activeMode.id === mode.id);
         setIsActive(activeMode.id === mode.id);
     }, [activeMode]);
 
@@ -28,7 +28,7 @@ const NavItem = (props: NavItemProps) => {
     const navItemOnClick = () => {
         updateMode(mode);
     }
-    console.info(`${loggingTag} mode`, activeMode);
+    // console.info(`${loggingTag} mode`, activeMode);
 
     if(isPhoneOrTablet){
         return (
@@ -62,7 +62,6 @@ interface NavProps {
 
 const Nav = (props : NavProps) => {
     const loggingTag = `[Nav]`;
-    const { width } = props;
     const theme = useTheme(),
         isPhoneOrTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -89,6 +88,7 @@ const Nav = (props : NavProps) => {
             </Box>
         )
     } else {
+        const width = 200;//desktop view nav width
         return (
             <Drawer
                 variant={"permanent"}

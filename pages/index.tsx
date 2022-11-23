@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 
 import { Box } from "@mui/material";
 import Nav from "../src/components/Nav/Nav";
-import Map from "../src/components/Map/Map";
+import Layout from "../src/components/layout";
+import MapView from "../src/views/Map";
+import PlacesListView from "../src/views/PlacesList";
 import { NavContextProvider } from "../src/providers/Navigation/Navigation";
 import {UserContextProvider} from "../src/providers/User/User";
 import DestinationList from "../src/components/DestinationList/DestinationList";
@@ -23,22 +25,20 @@ hydrated ? undefined : { width: 1224 }
     }, []);
 
     return (
-      <NavContextProvider>
-          <UserContextProvider>
-              {
-                  isTabletOrMobile ? (
-                      <DestinationList/>
-                  ):(
-                      <Box
-                          sx={{display: "flex"}}
-                      >
-                          <Nav width={navWidth}/>
-                          <Map left={navWidth}/>
-                      </Box>
-                  )
-              }
-          </UserContextProvider>
-      </NavContextProvider>
+        <UserContextProvider>
+            <NavContextProvider>
+                <Layout>
+                    {
+                        isTabletOrMobile ? (
+                            <PlacesListView/>
+                        ):(
+                            <MapView/>
+                        )
+                    }
+                </Layout>
+
+            </NavContextProvider>
+        </UserContextProvider>
     )
 }
 

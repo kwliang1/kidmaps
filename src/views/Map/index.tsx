@@ -1,14 +1,15 @@
-/* global google*/
+import React, {useCallback, useContext, useEffect, useState} from "react";
+import {ChangeEventValue, Coords} from "google-map-react";
 
-import {Box, Snackbar, Button, IconButton} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import GoogleMapReact, {ChangeEventValue, Coords, Maps} from "google-map-react";
-import Marker from "./Marker";
-import MapStatus from "../MapStatus/MapStatus";
-import React, {useContext, useEffect, useState, useCallback} from "react";
+import {Box} from "@mui/material";
+import {UserCtx} from "../../providers/User/User";
+import {NavCtx} from "../../providers/Navigation/Navigation";
+
+import Map from "../../components/Map";
+import Marker from "../../components/Map/Marker";
+import MapStatus from "../../components/Map/Status";
+
 import {searchByKeyword} from "../../../utils/Locations";
-import { UserCtx } from "../../providers/User/User";
-import { NavCtx } from "../../providers/Navigation/Navigation";
 
 interface Destination {
     text: string | undefined;
@@ -17,8 +18,11 @@ interface Destination {
     lng: number;
 }
 
-const MapView = (props: React.ComponentProps<any> = {left : 0}) => {
+interface MapViewProps extends React.ComponentProps<any>{
 
+}
+
+const MapView = (props: MapViewProps) => {
     const userContext = useContext(UserCtx);
     const {mode} = useContext(NavCtx);
     console.info(`current user mode`, mode);
@@ -84,17 +88,12 @@ const MapView = (props: React.ComponentProps<any> = {left : 0}) => {
         }
     }, [userMap, coordinates, getDestinations]);
 
-    const defaultProps = {
-        zoom: 17
-    };
-
-    const mapLayers = ['TransitLayer'];
-
     // @ts-ignore
     const handleGoogleApiResponse = ({map} = {}) => {
         //this is the "on load" event of the Google API js lib.
         //"maps" is a reference to the maps API object
         const loggingTag = `[GoogleAPILoaded]`;
+        console.info(`${loggingTag} loaded`);
         if(map){
             console.info(`${loggingTag} map`, map);
             setMap(map);
@@ -110,11 +109,11 @@ const MapView = (props: React.ComponentProps<any> = {left : 0}) => {
     };
 
     const handleOnDrag = useCallback((map: ChangeEventValue) => {
-      console.info(`on drag`, map);
-      //noe to KL, if destinations are not undefined, it will pass the first check below
-      if(destinations && destinations.length > 0){
-          setDestinations(undefined);
-      }
+        console.info(`on drag`, map);
+        //noe to KL, if destinations are not undefined, it will pass the first check below
+        if(destinations && destinations.length > 0){
+            setDestinations(undefined);
+        }
     }, [destinations]);
 
     return (
@@ -123,33 +122,28 @@ const MapView = (props: React.ComponentProps<any> = {left : 0}) => {
             sx={{
                 flexGrow: 1,
                 height: '100vh',
-                width: 400
             }}
         >
-            <GoogleMapReact
-                bootstrapURLKeys={{
-                    key: process.env.NEXT_PUBLIC_GOOG_MAPS_API_KEY,
-                    libraries: ['places']
-                }}
+            <Map
                 center={coordinates}
-                defaultZoom={defaultProps.zoom}
-                layerTypes={mapLayers}
                 onGoogleApiLoaded={handleGoogleApiResponse}
                 onChange={handleOnChange}
                 onDrag={handleOnDrag}
             >
-                {/*<MapMarker/>*/}
-                {Array.isArray(destinations) ? destinations.map((destination,index) => (
-                    <Marker
-                        text={destination.text}
-                        type={destination.type}
-                        key={index}
-                        lng={destination.lng}
-                        lat={destination.lat}
-                    />
-                )):<></>}
-            </GoogleMapReact>
-            {searchStatus ? <MapStatus message={searchStatus}/> : <></>}
+                {
+                    Array.isArray(destinations) &&
+                    destinations.map((destination,index) => (
+                        <Marker
+                            text={destination.text}
+                            type={destination.type}
+                            key={index}
+                            lng={destination.lng}
+                            lat={destination.lat}
+                        />
+                    ))
+                }
+            </Map>
+            {searchStatus && <MapStatus message={searchStatus}/>}
         </Box>
     )
 }

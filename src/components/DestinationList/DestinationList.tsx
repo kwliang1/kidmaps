@@ -1,5 +1,5 @@
 import {Container, Box, Card, CardHeader, CardContent} from "@mui/material";
-import React, {useContext, useState, useEffect} from "react";
+import React, {useContext, useState, useEffect, useCallback} from "react";
 import {UserCtx} from "../../providers/User/User";
 import {NavCtx} from "../../providers/Navigation/Navigation";
 import GoogleMapReact, {Coords} from "google-map-react";
@@ -12,8 +12,13 @@ interface DestinationItemProps extends React.ComponentProps<any>{
 
 const DestinationItem = (props: DestinationItemProps) => {
     const loggingTag = `[DestinationItem]`;
-    console.info(`${loggingTag} props`, props);
+    // console.info(`${loggingTag} props`, props);
     const {destination} = props;
+
+    // const getDistanceToDestination = useCallback(() => {
+    //     const
+    // }, []);
+
     return (
         <Card
             sx={{
@@ -46,7 +51,8 @@ const DestinationList = (props: React.ComponentProps<any>) => {
     }, [userContext]);
 
     // @ts-ignore
-    const handleGoogLoaded = ({map} = {}) => {
+    const handleGoogLoaded = ({map, maps} = {}) => {
+        console.info(`${loggingTag} geometry?`, maps);
         if(map){
             setMap(map);
             console.info(`${loggingTag} Google api loaded!`, map);
@@ -56,13 +62,28 @@ const DestinationList = (props: React.ComponentProps<any>) => {
     const getDestinations = async () => {
         const results = await searchByKeyword({
             map,
-            request_options : {
+            requestOptions : {
                 keyword: mode.keyword,
                 type: mode.type,
                 location: center,
                 radius: 3200//approx. 2 miles
             }
         });
+
+
+        // if(results.length > 0){
+        //     const test = results[0];
+        //     console.info(`${loggingTag} test`, test);
+        //     //getting directions for a specific destination!q
+        //     let service = new google.maps.DirectionsService();
+        //     service.route({
+        //         origin: center,
+        //         destination: test.geometry.location,
+        //         travelMode: google.maps.DirectionsTravelMode.WALKING//default to walking
+        //     }, (resp) => {
+        //         console.info(`${loggingTag} directions:`, resp);
+        //     })
+        // }
 
         setDestinations(results);
     }
@@ -84,6 +105,7 @@ const DestinationList = (props: React.ComponentProps<any>) => {
                 }}
                 center={center}
                 defaultZoom={17}
+                yesIWantToUseGoogleMapApiInternals
                 onGoogleApiLoaded={handleGoogLoaded}
             />
             <Box
