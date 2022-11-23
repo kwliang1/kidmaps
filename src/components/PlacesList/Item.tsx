@@ -1,6 +1,7 @@
 import React from "react";
-import {Card, CardContent, CardHeader, CardMedia} from "@mui/material";
+import {Card, CardContent, CardHeader, CardMedia, Typography} from "@mui/material";
 import ItemMedia from "./ItemMedia";
+import ItemActions from "./ItemActions";
 
 
 
@@ -40,7 +41,13 @@ const PlacesListItem = (props: PlacesListItemProps) => {
                 title={place.name}
             />
             <CardContent>
-                {place.vicinity}
+                <Typography>{place.vicinity}</Typography>
+                <ItemActions
+                    ratings={{
+                        count: place.user_ratings_total,
+                        value: place.rating
+                    }}
+                />
             </CardContent>
         </Card>
     )
