@@ -2,16 +2,12 @@ import type { NextPage } from 'next';
 import { useMediaQuery } from 'react-responsive';
 import { useEffect, useState } from "react";
 
-import { Box } from "@mui/material";
-import Nav from "../src/components/Nav/Nav";
 import Layout from "../src/components/layout";
 import MapView from "../src/views/Map";
 import PlacesListView from "../src/views/PlacesList";
 import { NavContextProvider } from "../src/providers/Navigation/Navigation";
-import {UserContextProvider} from "../src/providers/User/User";
-import DestinationList from "../src/components/DestinationList/DestinationList";
+import { UserContextProvider } from "../src/providers/User/User";
 
-const navWidth = 200;
 
 const Home: NextPage = () => {
     const [hydrated, setHydrated] = useState(false);
@@ -36,10 +32,9 @@ hydrated ? undefined : { width: 1224 }
                         )
                     }
                 </Layout>
-
             </NavContextProvider>
         </UserContextProvider>
     )
 }
 
-export default Home
+export default Home;

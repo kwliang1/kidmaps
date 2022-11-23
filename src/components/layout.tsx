@@ -1,7 +1,7 @@
 import {Box} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {useMediaQuery} from "react-responsive";
-import Nav from "./Nav/Nav";
+import Nav from "./Nav";
 
 const Layout = ( props:React.ComponentProps<any> ) => {
 	const [hydrated, setHydrated] = useState(false);

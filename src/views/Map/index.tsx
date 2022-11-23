@@ -11,13 +11,6 @@ import MapStatus from "../../components/Map/Status";
 
 import {searchByKeyword} from "../../../utils/Locations";
 
-interface Destination {
-    text: string | undefined;
-    type: string | undefined;
-    lat: number;
-    lng: number;
-}
-
 interface MapViewProps extends React.ComponentProps<any>{
 
 }
@@ -25,9 +18,9 @@ interface MapViewProps extends React.ComponentProps<any>{
 const MapView = (props: MapViewProps) => {
     const userContext = useContext(UserCtx);
     const {mode} = useContext(NavCtx);
-    console.info(`current user mode`, mode);
+    // console.info(`current user mode`, mode);
 
-    const [destinations, setDestinations] = useState<Destination[] | undefined>();
+    const [destinations, setDestinations] = useState<google.maps.places.PlaceResult[] | undefined>();
     const [coordinates, setCoordinates] = useState<Coords>(userContext.location.coordinates);
     const [userMap, setMap] = useState<google.maps.Map | undefined>();
     const [searchStatus, setSearchStatus] = useState<boolean | string>(false);
@@ -59,17 +52,19 @@ const MapView = (props: MapViewProps) => {
 
                 const results = await searchByKeyword(mapViewSearchRequirements);
                 console.info(`results`, results);
-                const newDestinations = Array.isArray(results) ? results.map((result: google.maps.places.PlaceResult) => {
-                    console.info(`mode: ${mode}`);
-                    return {
-                        text: typeof result.name === "string" ? result.name : '',
-                        type: mode.id,
-                        lat: result?.geometry?.location ? result.geometry.location.lat() : 0,
-                        lng: result?.geometry?.location ? result.geometry.location.lng() : 0
-                    }
-                }) : [];
-                console.info(`new destinations`, newDestinations);
-                setDestinations(newDestinations);
+                // const newDestinations = Array.isArray(results) ? results.map((result: google.maps.places.PlaceResult) => {
+                //     console.info(`mode: ${mode}`);
+                //     return {
+                //         text: typeof result.name === "string" ? result.name : '',
+                //         type: mode.id,
+                //         lat: result?.geometry?.location ? result.geometry.location.lat() : 0,
+                //         lng: result?.geometry?.location ? result.geometry.location.lng() : 0
+                //     }
+                // }) : [];
+                // console.info(`new destinations`, newDestinations);
+                if(Array.isArray(results)) {
+                    setDestinations(results);
+                }
             } catch(e){
                 console.error(`Error getting destinations`, e);
                 setDestinations([]);
@@ -132,15 +127,19 @@ const MapView = (props: MapViewProps) => {
             >
                 {
                     Array.isArray(destinations) &&
-                    destinations.map((destination,index) => (
-                        <Marker
-                            text={destination.text}
-                            type={destination.type}
-                            key={index}
-                            lng={destination.lng}
-                            lat={destination.lat}
-                        />
-                    ))
+                    destinations.map((destination, index) => {
+                        console.info(`destination`, destination);
+
+                        return (
+                            <Marker
+                                lat={destination?.geometry?.location ? destination.geometry.location.lat() : 0}
+                                lng={destination?.geometry?.location ? destination.geometry.location.lng() : 0}
+                                text={destination.name}
+                                type={mode.id}
+                                key={index}
+                            />
+                        )
+                    })
                 }
             </Map>
             {searchStatus && <MapStatus message={searchStatus}/>}

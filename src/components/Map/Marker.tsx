@@ -1,3 +1,4 @@
+import React from "react";
 import {Box, Tooltip} from "@mui/material";
 import {Stroller, LocalDining, Park, Wc, Icecream} from "@mui/icons-material";
 import {red} from '@mui/material/colors';
@@ -42,8 +43,16 @@ class MarkerStyles {
     }
 }
 
-const Marker = ({text = 'You', type = '', lat = 0, lng = 0} = {}) => {
+interface MarkerInterface extends React.ComponentProps<any>{
+    type: string;
+    text: string | undefined;
+    lat: number;
+    lng: number;
+}
+
+const Marker = (props: MarkerInterface) => {
     // console.info(`mapmarker type: ${type}`);
+    const {type, text, lat, lng} = props;
     const marker = new MarkerStyles(type);
     // console.info(`marker color: ${marker.color} type: ${marker.type}`);
     return (
@@ -67,5 +76,9 @@ const Marker = ({text = 'You', type = '', lat = 0, lng = 0} = {}) => {
         </Tooltip>
     )
 }
+
+Marker.defaultProps = {
+    text: ""
+};
 
 export default Marker;
