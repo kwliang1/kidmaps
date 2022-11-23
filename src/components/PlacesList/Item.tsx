@@ -1,5 +1,8 @@
 import React from "react";
-import {Card, CardContent, CardHeader} from "@mui/material";
+import {Card, CardContent, CardHeader, CardMedia} from "@mui/material";
+import ItemMedia from "./ItemMedia";
+
+
 
 interface PlacesListItemProps extends React.ComponentProps<any>{
     place: google.maps.places.PlaceResult
@@ -14,18 +17,30 @@ const PlacesListItem = (props: PlacesListItemProps) => {
     //     const
     // }, []);
 
+    // console.info(`${loggingTag} place`, place);
+
     return (
         <Card
             sx={{
-                marginBottom: 1
+                marginBottom: 2
             }}
             variant={"outlined"}
         >
+            {place?.photos && place.photos.map((photo, index) => {
+                const id = `${place.name}-${index}`;
+                return(
+                    <ItemMedia
+                        alt={id}
+                        key={id}
+                        {...photo}
+                    />
+                )
+            })}
             <CardHeader
                 title={place.name}
             />
             <CardContent>
-                Address: {place.vicinity}
+                {place.vicinity}
             </CardContent>
         </Card>
     )

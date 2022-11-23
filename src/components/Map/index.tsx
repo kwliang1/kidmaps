@@ -7,7 +7,7 @@ interface MapComponentProps extends React.ComponentProps<any>, Props{
 const defaultMapProps:MapComponentProps = {
     bootstrapURLKeys: {
         key: process.env.NEXT_PUBLIC_GOOG_MAPS_API_KEY,
-        libraries: ['places']
+        libraries: ['places', 'geometry']
     },
     center: {
         lat: 0,

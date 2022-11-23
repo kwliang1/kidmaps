@@ -37,6 +37,9 @@ const NavItem = (props: NavItemProps) => {
                 label={mode.name}
                 variant={isActive? "filled" : "outlined"}
                 color={"primary"}
+                sx={{
+                    margin: "0px 4px"
+                }}
             />
         )
     } else {
@@ -74,7 +77,7 @@ const Nav = (props : NavProps) => {
                     display: "flex",
                     paddingTop: 2,
                     paddingBottom: 2,
-                    justifyContent: "space-around"
+                    justifyContent: "center"
                 }}
             >
                 {

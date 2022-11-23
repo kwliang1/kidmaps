@@ -10,29 +10,29 @@ export interface Mode {
 
 const appModes: Mode[] = [
     {
-        name: "Parks",
-        id: "parks",
-        keyword: "parks",
-        type: "park"
-    },
-    {
         name: "Bathrooms",
         id: "bathrooms",
         keyword: "bathrooms",
         type: "point_of_interest"
     },
     {
-        name: "Ice Cream",
-        id: "ice_cream",
-        keyword: "ice cream",
-        type: "restaurant"
+        name: "Parks",
+        id: "parks",
+        keyword: "parks",
+        type: "park"
     },
     {
-        name: "Restaurants",
-        id: "restaurants",
-        keyword: "restaurants",
+        name: "Treats",
+        id: "ice_cream",
+        keyword: "ice cream frozen yogurt pizza",
         type: "restaurant"
-    }
+    },
+    // {
+    //     name: "Restaurants",
+    //     id: "restaurants",
+    //     keyword: "restaurants",
+    //     type: "restaurant"
+    // }
 ]
 
 interface NavigationContextInterface {

@@ -9,7 +9,7 @@ import Map from "../../components/Map";
 import Marker from "../../components/Map/Marker";
 import MapStatus from "../../components/Map/Status";
 
-import {searchByKeyword} from "../../../utils/Locations";
+import {PlacesSearch} from "../../../utils/PlacesSearch";
 
 interface MapViewProps extends React.ComponentProps<any>{
 
@@ -20,9 +20,10 @@ const MapView = (props: MapViewProps) => {
     const {mode} = useContext(NavCtx);
     // console.info(`current user mode`, mode);
 
+    const [search, setSearch] = useState<PlacesSearch | undefined>();
     const [destinations, setDestinations] = useState<google.maps.places.PlaceResult[] | undefined>();
     const [coordinates, setCoordinates] = useState<Coords>(userContext.location.coordinates);
-    const [userMap, setMap] = useState<google.maps.Map | undefined>();
+    const [map, setMap] = useState<google.maps.Map | undefined>();
     const [searchStatus, setSearchStatus] = useState<boolean | string>(false);
 
     useEffect(() => {
@@ -35,53 +36,44 @@ const MapView = (props: MapViewProps) => {
         }
     }, []);
 
-    const getDestinations = useCallback(async () => {
-        console.info(`mode in getBathrooms: ${mode}`);
+    const getDestinations = useCallback( () => {
+        if(map){//only call this function is usermap is available
+            let mapViewSearchRequirements = {
+                requestOptions:{
+                    keyword: mode.keyword,
+                    type: mode.type,
+                    bounds: map.getBounds()
+                }
+            };
 
-        if(userMap){//only call this function is usermap is available
-            try{
-
-                let mapViewSearchRequirements = {
-                    map:userMap,
-                    requestOptions:{
-                        keyword: mode.keyword,
-                        type: mode.type,
-                        bounds: userMap.getBounds()
+            search?.byKeyword(mapViewSearchRequirements)
+                .then(results => {
+                    console.info(`results`, results);
+                    if(Array.isArray(results)) {
+                        setDestinations(results);
                     }
-                };
-
-                const results = await searchByKeyword(mapViewSearchRequirements);
-                console.info(`results`, results);
-                // const newDestinations = Array.isArray(results) ? results.map((result: google.maps.places.PlaceResult) => {
-                //     console.info(`mode: ${mode}`);
-                //     return {
-                //         text: typeof result.name === "string" ? result.name : '',
-                //         type: mode.id,
-                //         lat: result?.geometry?.location ? result.geometry.location.lat() : 0,
-                //         lng: result?.geometry?.location ? result.geometry.location.lng() : 0
-                //     }
-                // }) : [];
-                // console.info(`new destinations`, newDestinations);
-                if(Array.isArray(results)) {
-                    setDestinations(results);
-                }
-            } catch(e){
-                console.error(`Error getting destinations`, e);
-                setDestinations([]);
-                if(e === google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
-                    setSearchStatus(`No destinations found`);
-                }
-            }
+                })
+                .catch(e => {
+                    console.error(`Error getting destinations`, e);
+                    setDestinations(undefined);
+                    if(e === google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
+                        setSearchStatus(`No destinations found`);
+                    }
+                })
         }
-
-
-    }, [mode, userMap, coordinates]);
+    }, [mode, map, search]);
 
     useEffect( () => {
-        if(userMap !== null){//the google js lib has been initialized
+        if(map !== null){//the google js lib has been initialized
+            setSearch(new PlacesSearch(map));
+        }
+    }, [map]);
+
+    useEffect(() => {
+        if(search){
             getDestinations();
         }
-    }, [userMap, coordinates, getDestinations]);
+    }, [search, getDestinations, coordinates]);
 
     // @ts-ignore
     const handleGoogleApiResponse = ({map} = {}) => {
@@ -98,13 +90,13 @@ const MapView = (props: MapViewProps) => {
     }
 
     const handleOnChange = (map: ChangeEventValue) => {
-        console.info(`on change,`, map);
+        // console.info(`on change,`, map);
         const {center} = map;
         setCoordinates(center);
     };
 
     const handleOnDrag = useCallback((map: ChangeEventValue) => {
-        console.info(`on drag`, map);
+        // console.info(`on drag`, map);
         //noe to KL, if destinations are not undefined, it will pass the first check below
         if(destinations && destinations.length > 0){
             setDestinations(undefined);
@@ -127,19 +119,15 @@ const MapView = (props: MapViewProps) => {
             >
                 {
                     Array.isArray(destinations) &&
-                    destinations.map((destination, index) => {
-                        console.info(`destination`, destination);
-
-                        return (
-                            <Marker
-                                lat={destination?.geometry?.location ? destination.geometry.location.lat() : 0}
-                                lng={destination?.geometry?.location ? destination.geometry.location.lng() : 0}
-                                text={destination.name}
-                                type={mode.id}
-                                key={index}
-                            />
-                        )
-                    })
+                    destinations.map((destination, index) => (
+                        <Marker
+                            lat={destination?.geometry?.location ? destination.geometry.location.lat() : 0}
+                            lng={destination?.geometry?.location ? destination.geometry.location.lng() : 0}
+                            text={destination.name}
+                            type={mode.id}
+                            key={index}
+                        />
+                    ))
                 }
             </Map>
             {searchStatus && <MapStatus message={searchStatus}/>}

@@ -1,9 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState, useCallback} from "react";
 import Map from "../../components/Map";
 import {UserCtx} from "../../providers/User/User";
 import {NavCtx} from "../../providers/Navigation/Navigation";
 import {Coords} from "google-map-react";
-import {searchByKeyword} from "../../../utils/Locations";
+import {BathroomsSearch, PlacesSearch} from "../../../utils/PlacesSearch";
 import PlacesList from "../../components/PlacesList";
 
 const PlacesListView = (props: React.ComponentProps<any>) => {
@@ -28,42 +28,57 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
         }
     }
 
-    const getDestinations = async () => {
-        const results = await searchByKeyword({
-            map,
+    const getDestinations = useCallback( () => {
+        const search = mode.id === "bathrooms" ? new BathroomsSearch(map)
+            : new PlacesSearch(map);
+
+        search?.byKeyword({
             requestOptions : {
                 keyword: mode.keyword,
                 type: mode.type,
                 location: center,
                 radius: 3200//approx. 2 miles
             }
-        });
+        })
+        .then(results => {
+            console.info(`${Array.isArray(results)} destination results`, results);
+            if(Array.isArray(results)){
+                setDestinations(results);
+            }
+            // if(results.length > 0){
+            //     const test = results[0];
+            //     console.info(`${loggingTag} test`, test);
+            //     //getting directions for a specific destination!q
+            //     let service = new google.maps.DirectionsService();
+            //     service.route({
+            //         origin: center,
+            //         destination: test.geometry.location,
+            //         travelMode: google.maps.DirectionsTravelMode.WALKING//default to walking
+            //     }, (resp) => {
+            //         console.info(`${loggingTag} directions:`, resp);
+            //     })
+            // }
+        })
+        .catch(e => {
+            console.error(e);
+        })
 
-
-        // if(results.length > 0){
-        //     const test = results[0];
-        //     console.info(`${loggingTag} test`, test);
-        //     //getting directions for a specific destination!q
-        //     let service = new google.maps.DirectionsService();
-        //     service.route({
-        //         origin: center,
-        //         destination: test.geometry.location,
-        //         travelMode: google.maps.DirectionsTravelMode.WALKING//default to walking
-        //     }, (resp) => {
-        //         console.info(`${loggingTag} directions:`, resp);
-        //     })
-        // }
-        console.info(`${Array.isArray(results)} destination results`, results);
-        if(Array.isArray(results)){
-            setDestinations(results);
-        }
-    }
+    }, [center, mode, map]);
 
     useEffect(() => {
         if(map){
             getDestinations();
         }
-    }, [map, mode]);
+    }, [map, getDestinations, mode]);
+
+    // useEffect(() => {
+    //     if(map){
+    //         console.info(`setting search...`);
+    //         setSearch(new PlacesSearch(map));
+    //     }
+    // }, [map]);
+
+
 
     return (
         <>
