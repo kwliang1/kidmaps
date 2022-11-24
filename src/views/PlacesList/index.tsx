@@ -37,7 +37,8 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
                 keyword: mode.keyword,
                 type: mode.type,
                 location: center,
-                radius: 3200//approx. 2 miles
+                rankBy: google.maps.places.RankBy.DISTANCE
+                // radius: 3200//approx. 2 miles
             }
         })
         .then(results => {

@@ -9,6 +9,7 @@ interface SearchRequirements {
 interface SearchRequestOptions {
 	keyword: string;
 	type: string;
+	rankBy?: google.maps.places.RankBy;
 	bounds?: google.maps.LatLngBounds;
 	location?: Coords | google.maps.LatLng;
 	radius?: number;
@@ -37,11 +38,12 @@ class PlacesSearch {
 	}
 
 	byKeyword(requirements: SearchRequirements):Promise<google.maps.places.PlaceResult[] | null> {
-
-		const loggingTag = `[${requirements.requestOptions.keyword}]`;
+		const loggingTag = `${this.tag}[${requirements.requestOptions.keyword}]`;
 		return new Promise<google.maps.places.PlaceResult[] | null>((resolve, reject) => {
 			const service = new google.maps.places.PlacesService(this.map),
 				options = {
+					openNow: true,
+					rankBy: google.maps.places.RankBy.PROMINENCE,
 					...requirements.requestOptions,
 				};
 
