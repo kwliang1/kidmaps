@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { useMediaQuery } from 'react-responsive';
 import { useEffect, useState } from "react";
 
-import Layout from "../src/components/layout";
+import Index from "../src/components/Layout";
 import MapView from "../src/views/Map";
 import PlacesListView from "../src/views/PlacesList";
 import { NavContextProvider } from "../src/providers/Navigation/Navigation";
@@ -23,7 +23,7 @@ hydrated ? undefined : { width: 1224 }
     return (
         <UserContextProvider>
             <NavContextProvider>
-                <Layout>
+                <Index>
                     {
                         isTabletOrMobile ? (
                             <PlacesListView/>
@@ -31,7 +31,7 @@ hydrated ? undefined : { width: 1224 }
                             <MapView/>
                         )
                     }
-                </Layout>
+                </Index>
             </NavContextProvider>
         </UserContextProvider>
     )

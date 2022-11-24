@@ -1,9 +1,9 @@
 import {Box} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {useMediaQuery} from "react-responsive";
-import Nav from "./Nav";
+import Nav from "../Nav";
 
-const Layout = ( props:React.ComponentProps<any> ) => {
+const Index = (props:React.ComponentProps<any> ) => {
 	const [hydrated, setHydrated] = useState(false);
 	const isTabletOrMobile = useMediaQuery(
 		{maxWidth:1224, orientation: "portrait"},
@@ -37,4 +37,4 @@ const Layout = ( props:React.ComponentProps<any> ) => {
 	)
 }
 
-export default Layout;
+export default Index;

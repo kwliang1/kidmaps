@@ -12,7 +12,7 @@ const ItemMedia = (props:ItemMediaInterface) => {
     return(
         <CardMedia
             component={"img"}
-            height={140}
+            height={180}
             alt={alt}
             image={src}
         />

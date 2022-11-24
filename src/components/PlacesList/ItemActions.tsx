@@ -2,10 +2,12 @@ import React from "react";
 import {Box} from "@mui/material";
 import ItemDistance from "./ItemDistance";
 import ItemRating from "./ItemRating";
+import {Ratings} from "./ItemAction";
 
 
 interface ItemActionsInterface extends React.ComponentProps<any>{
-    directions: google.maps.DirectionsLeg | null;
+    directions?: google.maps.DirectionsLeg | null;
+    ratings?: object | undefined;
 }
 
 const ItemActions = (props:ItemActionsInterface) => {
@@ -18,7 +20,6 @@ const ItemActions = (props:ItemActionsInterface) => {
             sx={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginTop: 2
             }}
         >
             {ratings && <ItemRating ratings={ratings}/>}
