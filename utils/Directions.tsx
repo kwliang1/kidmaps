@@ -6,7 +6,7 @@ class DirectionsUrl {
     origin: string;
     destination: string;
     destination_place_id?: string;
-    travelmode: google.maps.TravelMode;
+    travelmode: string;
 
     constructor(origin:Coords, destination:google.maps.LatLng, place_id:string | undefined) {
         this.tag = `[DirectionsUrl]`;
@@ -16,7 +16,7 @@ class DirectionsUrl {
         if(place_id){
             this.destination_place_id = place_id;
         }
-        this.travelmode = google.maps.TravelMode.WALKING;//assume they're walking;
+        this.travelmode = String(google.maps.TravelMode.WALKING).toLowerCase();//assume they're walking;
     }
 
     get href(){

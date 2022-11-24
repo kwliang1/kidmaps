@@ -57,7 +57,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
             const url = new DirectionsUrl(user.location.coordinates, place.geometry.location, place.place_id);
             window.open(url.href);
         }
-    }, []);
+    }, [place, user]);
 
     return (
         <Card
@@ -87,7 +87,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
                         value: place.rating
                     }}
                 />
-                <Typography>{place.vicinity}</Typography>
+                <Typography >{place.vicinity}</Typography>
                 <ItemActions
                     directions={directions}
                 />
