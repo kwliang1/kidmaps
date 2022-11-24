@@ -29,7 +29,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     }
 
     const getDestinations = useCallback( () => {
-        const search = mode.id === "bathroom" ? new BathroomsSearch(map)
+        const search = mode.id === "bathrooms" ? new BathroomsSearch(map)
             : new PlacesSearch(map);
 
         search?.byKeyword({
