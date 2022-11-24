@@ -16,15 +16,7 @@ const Layout = ( props:React.ComponentProps<any> ) => {
 	
 	return (
 			isTabletOrMobile ? (
-				<Box
-					sx={{
-						display: "flex",
-						flexDirection: "column",
-						alignItems: "stretch",
-						paddingRight: 2,
-						paddingLeft: 2
-					}}
-				>
+				<Box>
 					{props.children}
 				</Box>
 			) : (

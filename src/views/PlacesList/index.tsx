@@ -21,7 +21,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
 
     // @ts-ignore
     const handleGoogLoaded = ({map, maps} = {}) => {
-        console.info(`${loggingTag} geometry?`, maps);
+        // console.info(`${loggingTag} geometry?`, maps);
         if(map){
             setMap(map);
             console.info(`${loggingTag} Google api loaded!`, map);
@@ -29,7 +29,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     }
 
     const getDestinations = useCallback( () => {
-        const search = mode.id === "bathrooms" ? new BathroomsSearch(map)
+        const search = mode.id === "bathroom" ? new BathroomsSearch(map)
             : new PlacesSearch(map);
 
         search?.byKeyword({
