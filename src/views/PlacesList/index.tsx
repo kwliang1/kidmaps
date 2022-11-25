@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState, useCallback} from "react";
+import React, {useContext, useEffect, useState, useCallback, useRef} from "react";
 import Map from "../../components/Map";
 import {UserCtx} from "../../providers/User";
 import {NavCtx} from "../../providers/Navigation";
@@ -10,6 +10,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     const loggingTag = `[PlacesList]`;
     const userContext = useContext(UserCtx);
     const {mode} = useContext(NavCtx);
+    const currentModeID = useRef(mode.id);
     const [map, setMap] = useState();
     const [center, setCenter] = useState<Coords>();
     const [destinations, setDestinations] = useState<google.maps.places.PlaceResult[]>();
@@ -17,7 +18,12 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     useEffect(() => {
         console.info(`${loggingTag} setting center to`, userContext.location.coordinates);
         setCenter(userContext.location.coordinates);
-    }, [userContext, loggingTag]);
+    }, [userContext.location.coordinates, loggingTag]);
+
+    useEffect(()=>{
+        //keep[ing the current mode ID up to date
+        currentModeID.current = mode.id;
+    }, [mode.id]);
 
     // @ts-ignore
     const handleGoogLoaded = ({map} = {}) => {
@@ -43,8 +49,8 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
             }
         })
         .then(( results: (PlaceSearchResult[] | null)) => {
-            console.info(`Is Array?:${Array.isArray(results)} destination results`, results);
             if(results){
+                console.info(`Place Search results`, results);
                 updateDestinations(results);
             }
         })
@@ -55,15 +61,16 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
 
     const updateDestinations = useCallback((results: PlaceSearchResult[]) => {
         const loggingTag = `[updateDestinations]`;
+
         if(
             Array.isArray(results) &&
             results.length > 0 &&
-            (results[0]?.id === mode.id)
+            (results[0]?.id === currentModeID.current)
         ){
             console.info(`${loggingTag} results id: ${results[0].id}, mode id: ${mode.id}, check:${results[0]?.id === mode.id}`)
             setDestinations(results);
         }
-    },[]);//intentionally setting no dependencies so that we will only render the results for the latest mode.
+    },[currentModeID]);//intentionally setting no dependencies so that we will only render the results for the latest mode.
 
 
     useEffect(() => {
