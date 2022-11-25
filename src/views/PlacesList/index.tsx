@@ -33,6 +33,19 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
         }
     }
 
+    const updateDestinations = useCallback((results: PlaceSearchResult[]) => {
+        const loggingTag = `[updateDestinations]`;
+
+        if(
+            Array.isArray(results) &&
+            results.length > 0 &&
+            (results[0]?.id === currentModeID.current)
+        ){
+            console.info(`${loggingTag} results id: ${results[0].id}, mode id: ${currentModeID.current}, check:${results[0]?.id === currentModeID.current}`)
+            setDestinations(results);
+        }
+    },[currentModeID]);//intentionally setting no dependencies so that we will only render the results for the latest mode.
+
     const getDestinations = useCallback( () => {
         const search = mode.id === "bathrooms" ? new BathroomsSearch(map)
             : new PlacesSearch(map);
@@ -57,21 +70,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
         .catch(e => {
             console.error(e);
         })
-    }, [center, mode.id, mode.keyword, mode.type, map]);
-
-    const updateDestinations = useCallback((results: PlaceSearchResult[]) => {
-        const loggingTag = `[updateDestinations]`;
-
-        if(
-            Array.isArray(results) &&
-            results.length > 0 &&
-            (results[0]?.id === currentModeID.current)
-        ){
-            console.info(`${loggingTag} results id: ${results[0].id}, mode id: ${mode.id}, check:${results[0]?.id === mode.id}`)
-            setDestinations(results);
-        }
-    },[currentModeID]);//intentionally setting no dependencies so that we will only render the results for the latest mode.
-
+    }, [center, mode.id, mode.keyword, mode.type, map, updateDestinations]);
 
     useEffect(() => {
         if(map){
