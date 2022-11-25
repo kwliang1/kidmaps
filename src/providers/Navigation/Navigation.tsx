@@ -24,8 +24,8 @@ const appModes: Mode[] = [
     {
         name: "Treats",
         id: "ice_cream",
-        keyword: "pizza",
-        type: "restaurant"
+        keyword: "ice cream cupcakes cakes",
+        type: "point_of_interest"
     },
     // {
     //     name: "Restaurants",

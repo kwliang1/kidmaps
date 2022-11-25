@@ -21,7 +21,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
     const [directions, setDirections] = useState<google.maps.DirectionsLeg | null>(null);
     const {ref, inView, entry} = useInView({
         threshold: 0,
-        delay: 1000,
+        delay: 250,
         triggerOnce: true
     });
 

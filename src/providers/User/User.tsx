@@ -2,6 +2,7 @@ import React, {createContext, useEffect, useMemo, useState} from "react";
 import {Coords} from "google-map-react";
 
 class UserLocation {
+    private readonly tag: string;
     private readonly _localstorage_key: string;
     private _coordinates: Coords;
     _permission: UserLocationPermission;
@@ -9,6 +10,7 @@ class UserLocation {
         this._localstorage_key = `last_known_user_location`;
         this._coordinates = this.getLastKnownLocation();
         this._permission = new UserLocationPermission();
+        this.tag = `[UserLocation]`;
     }
 
     get coordinates():Coords{
@@ -54,7 +56,7 @@ class UserLocation {
                           this.getFromBrowser();//recursively call itself
                         })
                 } else if (permissionStatus.state === "denied"){
-
+                    console.error(`${this.tag} Permission denied :(`);
                 } else {//granted or prompt
                     navigator.geolocation.getCurrentPosition(
                         (result: GeolocationPosition) => {

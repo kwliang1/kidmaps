@@ -29,7 +29,13 @@ const MapView = (props: MapViewProps) => {
     useEffect(() => {
         if(navigator.geolocation){
             console.info(`already have the user's location permission!`);
-            userContext.location.getFromBrowser();
+            userContext.location.getFromBrowser()
+                .then((result) => {
+                    console.info(result);
+                    if(result){
+                        setCoordinates(result);
+                    }
+                });
             //setting the user's coordinates
         } else {
             console.error(`don't have the user's permission. ruh roh`);
