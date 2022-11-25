@@ -46,7 +46,7 @@ class UserLocation {
         localStorage.setItem(this._localstorage_key, JSON.stringify(location));
     }
 
-    getFromBrowser(): Promise<Coords|GeolocationPositionError|Error> {
+    getFromBrowser(): Promise<Coords> {
         return new Promise((resolve, reject)=> {
             if(navigator.geolocation){//just checks if it's been supported
                 const permissionStatus = this._permission.status;

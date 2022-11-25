@@ -35,6 +35,9 @@ const MapView = (props: MapViewProps) => {
                     if(result){
                         setCoordinates(result);
                     }
+                })
+                .catch(e => {
+                    console.error(`Error occurred retrieving user's location:`, e);
                 });
             //setting the user's coordinates
         } else {
