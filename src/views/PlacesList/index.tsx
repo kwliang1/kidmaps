@@ -3,7 +3,7 @@ import Map from "../../components/Map";
 import {UserCtx} from "../../providers/User";
 import {NavCtx} from "../../providers/Navigation";
 import {Coords} from "google-map-react";
-import {BathroomsSearch, PlacesSearch} from "../../../utils/PlacesSearch";
+import {BathroomsSearch, PlaceSearchResult, PlacesSearch} from "../../../utils/PlacesSearch";
 import PlacesList from "../../components/PlacesList";
 
 const PlacesListView = (props: React.ComponentProps<any>) => {
@@ -20,11 +20,10 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     }, [userContext, loggingTag]);
 
     // @ts-ignore
-    const handleGoogLoaded = ({map, maps} = {}) => {
-        // console.info(`${loggingTag} geometry?`, maps);
+    const handleGoogLoaded = ({map} = {}) => {
         if(map){
-            setMap(map);
             console.info(`${loggingTag} Google api loaded!`, map);
+            setMap(map);
         }
     }
 
@@ -32,39 +31,40 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
         const search = mode.id === "bathrooms" ? new BathroomsSearch(map)
             : new PlacesSearch(map);
 
+        setDestinations([]);
+
         search?.byKeyword({
             requestOptions : {
+                id: mode.id,
                 keyword: mode.keyword,
                 type: mode.type,
                 location: center,
                 rankBy: google.maps.places.RankBy.DISTANCE
-                // radius: 3200//approx. 2 miles
             }
         })
-        .then(results => {
-            console.info(`${Array.isArray(results)} destination results`, results);
-            if(Array.isArray(results)){
-                setDestinations(results);
+        .then(( results: (PlaceSearchResult[] | null)) => {
+            console.info(`Is Array?:${Array.isArray(results)} destination results`, results);
+            if(results){
+                updateDestinations(results);
             }
-            // if(results.length > 0){
-            //     const test = results[0];
-            //     console.info(`${loggingTag} test`, test);
-            //     //getting directions for a specific destination!q
-            //     let service = new google.maps.DirectionsService();
-            //     service.route({
-            //         origin: center,
-            //         destination: test.geometry.location,
-            //         travelMode: google.maps.DirectionsTravelMode.WALKING//default to walking
-            //     }, (resp) => {
-            //         console.info(`${loggingTag} directions:`, resp);
-            //     })
-            // }
         })
         .catch(e => {
             console.error(e);
         })
+    }, [center, mode.id, mode.keyword, mode.type, map]);
 
-    }, [center, mode, map]);
+    const updateDestinations = useCallback((results: PlaceSearchResult[]) => {
+        const loggingTag = `[updateDestinations]`;
+        if(
+            Array.isArray(results) &&
+            results.length > 0 &&
+            (results[0]?.id === mode.id)
+        ){
+            console.info(`${loggingTag} results id: ${results[0].id}, mode id: ${mode.id}, check:${results[0]?.id === mode.id}`)
+            setDestinations(results);
+        }
+    },[]);//intentionally setting no dependencies so that we will only render the results for the latest mode.
+
 
     useEffect(() => {
         if(map){
@@ -72,22 +72,15 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
         }
     }, [map, getDestinations, mode]);
 
-    // useEffect(() => {
-    //     if(map){
-    //         console.info(`setting search...`);
-    //         setSearch(new PlacesSearch(map));
-    //     }
-    // }, [map]);
-
-
-
     return (
         <>
             <Map
                 center={center}
                 onGoogleApiLoaded={handleGoogLoaded}
             />
-            <PlacesList places={destinations}/>
+            <PlacesList
+                places={destinations}
+            />
         </>
     )
 }

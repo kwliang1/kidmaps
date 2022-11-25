@@ -47,7 +47,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
         if(inView){
             getDistanceToDestination();
         }
-        console.info(`${loggingTag} "${place.name}" view state: ${inView}`);
+        // console.info(`${loggingTag} "${place.name}" view state: ${inView}`);
     }, [inView, getDistanceToDestination, loggingTag, place.name])
 
     // console.info(`${loggingTag} place`, place);

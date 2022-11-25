@@ -7,6 +7,7 @@ interface SearchRequirements {
 }
 
 interface SearchRequestOptions {
+	id: string;
 	keyword: string;
 	type: string;
 	rankBy?: google.maps.places.RankBy;
@@ -15,8 +16,8 @@ interface SearchRequestOptions {
 	radius?: number;
 }
 
-interface PlaceSearchResult extends google.maps.places.PlaceResult {
-
+export interface PlaceSearchResult extends google.maps.places.PlaceResult {
+	id: string;
 }
 
 interface BathroomInterface extends PlaceSearchResult {
@@ -30,52 +31,64 @@ class PlacesSearch {
 	results: PlaceSearchResult[];
 	map: any | null;
 	tag: string;
+	pending: boolean;
 
 	constructor(map:any | null) {
 		this.map = map;
 		this.results = [];
-		this.tag = `[PlacesSearch]`
+		this.pending = false;
+		this.tag = `[PlacesSearch]`;
 	}
 
-	byKeyword(requirements: SearchRequirements):Promise<google.maps.places.PlaceResult[] | null> {
+	byKeyword(requirements: SearchRequirements):Promise<PlaceSearchResult[] | null> {
 		const loggingTag = `${this.tag}[${requirements.requestOptions.keyword}]`;
-		return new Promise<google.maps.places.PlaceResult[] | null>((resolve, reject) => {
-			const service = new google.maps.places.PlacesService(this.map),
-				options = {
-					openNow: true,
-					rankBy: google.maps.places.RankBy.PROMINENCE,
-					...requirements.requestOptions,
-				};
+		return new Promise<PlaceSearchResult[] | null>((resolve, reject) => {
+			this.pending = true;
+			try {
+				const service = new google.maps.places.PlacesService(this.map),
+					options = {
+						openNow: true,
+						rankBy: google.maps.places.RankBy.PROMINENCE,
+						...requirements.requestOptions,
+					};
 
-			console.info(`${loggingTag} final request options`, options);
-
-			service.nearbySearch(options, (
-				results: google.maps.places.PlaceResult[] | null,
-				status: google.maps.places.PlacesServiceStatus,
-				pagination: google.maps.places.PlaceSearchPagination | null
-			) => {
-				try {
-					if (status !== "OK" || !results) {
-						// console.error(`${loggingTag} Error! status: ${status}`);
-						// if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-						// 	// alert(`No results found!`);
-						// }
-						reject(status);
-						return;
+				console.info(`${loggingTag} final request options`, options);
+				service.nearbySearch(options, (
+					results: google.maps.places.PlaceResult[] | null,
+					status: google.maps.places.PlacesServiceStatus,
+					pagination: google.maps.places.PlaceSearchPagination | null
+				) => {
+					try {
+						if (status !== "OK" || !results) {
+							reject(status);
+							return;
+						}
+						console.info(`${loggingTag} resp`, results);
+						const updatedResults = results.map(result => {
+							const finalResult: PlaceSearchResult = {
+								...result,
+								id: options.id
+							}
+							return finalResult;
+						});
+						resolve(updatedResults);
+					} catch (e) {
+						reject(e);
 					}
-					console.info(`${loggingTag} resp`, results);
-					resolve(results);
-				} catch (e) {
-					reject(e);
-				}
-			});
+				});
+			} catch(e){
+				reject(e);
+			} finally {
+				this.pending = false;
+			}
 		});
 	}
+
 }
 
 class BathroomsSearch extends PlacesSearch {
 
-	async byKeyword(requirements:SearchRequirements):Promise<google.maps.places.PlaceResult[] | null> {
+	async byKeyword(requirements:SearchRequirements):Promise<PlaceSearchResult[] | null> {
 		const results = await super.byKeyword(requirements);
 		if(results){
 			this.results = this.validatePlaces(results);
@@ -83,13 +96,13 @@ class BathroomsSearch extends PlacesSearch {
 		return this.results;
 	}
 
-	validatePlaces(places: google.maps.places.PlaceResult[]){
+	validatePlaces(places: PlaceSearchResult[]){
 		return places.filter(place => {
 			return this.isValidBathroom(place);
 		});
 	}
 
-	isValidBathroom(place: google.maps.places.PlaceResult){
+	isValidBathroom(place: PlaceSearchResult){
 		const bathroomPlaceTypes = ["point_of_interest", "establishment"];
 		return typeof place.types === "object" && place.types.length === bathroomPlaceTypes.length && place.types.every((value, index) => value === bathroomPlaceTypes[index]);
 	}
@@ -97,10 +110,12 @@ class BathroomsSearch extends PlacesSearch {
 }
 
 class Bathroom implements BathroomInterface {
+	id: string;
 	public: boolean;
 	paid: boolean;
 
-	constructor() {
+	constructor(id:string) {
+		this.id = id;
 		this.public = false;
 		this.paid = false;
 	}

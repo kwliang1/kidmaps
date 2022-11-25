@@ -49,6 +49,7 @@ const MapView = (props: MapViewProps) => {
         if(map){//only call this function is usermap is available
             let mapViewSearchRequirements = {
                 requestOptions:{
+                    id: mode.id,
                     keyword: mode.keyword,
                     type: mode.type,
                     bounds: map.getBounds()

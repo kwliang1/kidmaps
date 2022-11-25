@@ -1,8 +1,8 @@
 import React, {useRef} from "react";
 import Nav from "../Nav";
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import PlacesListItem from "./Item";
-
+import PlacesPending from "./Pending";
 
 interface PlacesListInterface extends React.ComponentProps<any> {
     places: google.maps.places.PlaceResult[] | undefined
@@ -10,7 +10,6 @@ interface PlacesListInterface extends React.ComponentProps<any> {
 
 const PlacesList = (props:PlacesListInterface) => {
     const {places} = props;
-    const ref = useRef(null)
     return (
         <Box
             sx={{
@@ -31,15 +30,16 @@ const PlacesList = (props:PlacesListInterface) => {
             >
                 <Box>
                     {
-                        Array.isArray(places) && places.map((place, index) => (
+                        (Array.isArray(places) && places.length > 0) ? places.map((place, index) => (
                             <PlacesListItem
                                 key={index}
                                 place={place}
                             />
-                        ))
+                        )) : (
+                            <PlacesPending/>
+                        )
                     }
                 </Box>
-
             </Box>
         </Box>
     )
