@@ -1,7 +1,7 @@
 
 import {Drawer, List, Box} from "@mui/material";
-import {Mode} from "../../providers/Navigation/Navigation";
-import {appModes} from "../../providers/Navigation/Navigation";
+import {Mode} from "../../providers/Navigation";
+import {appModes} from "../../providers/Navigation";
 import {useTheme} from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery";
 import NavItem from "./Item";

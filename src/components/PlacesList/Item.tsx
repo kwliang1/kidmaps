@@ -3,7 +3,7 @@ import {Card, CardContent, CardHeader, CardActions, Typography, Box, Button} fro
 import ItemMedia from "./ItemMedia";
 import ItemActions from "./ItemActions";
 import { useInView } from "react-intersection-observer";
-import {UserCtx} from "../../providers/User/User";
+import {UserCtx} from "../../providers/User";
 import DirectionsUrl from "../../../utils/Directions";
 
 
@@ -41,14 +41,14 @@ const PlacesListItem = (props: PlacesListItemProps) => {
                 }
             });
         }
-    }, [user]);
+    }, [user, loggingTag, place?.geometry?.location, place.name]);
 
     useEffect(() => {
         if(inView){
             getDistanceToDestination();
         }
         console.info(`${loggingTag} "${place.name}" view state: ${inView}`);
-    }, [inView])
+    }, [inView, getDistanceToDestination, loggingTag, place.name])
 
     // console.info(`${loggingTag} place`, place);
 
@@ -57,7 +57,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
             const url = new DirectionsUrl(user.location.coordinates, place.geometry.location, place.place_id);
             window.open(url.href);
         }
-    }, [place, user]);
+    }, [place?.geometry?.location, place.place_id, user.location.coordinates]);
 
     return (
         <Card

@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import Index from "../src/components/Layout";
 import MapView from "../src/views/Map";
 import PlacesListView from "../src/views/PlacesList";
-import { NavContextProvider } from "../src/providers/Navigation/Navigation";
-import { UserContextProvider } from "../src/providers/User/User";
+import { NavContextProvider } from "../src/providers/Navigation";
+import { UserContextProvider } from "../src/providers/User";
 
 
 const Home: NextPage = () => {

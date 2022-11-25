@@ -1,4 +1,4 @@
-import {Mode, NavCtx} from "../../providers/Navigation/Navigation";
+import {Mode, NavCtx} from "../../providers/Navigation";
 import {useContext, useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -18,7 +18,7 @@ const NavItem = (props: NavItemProps) => {
     useEffect(() => {
         // console.info(`${loggingTag} is active? `, activeMode.id === mode.id);
         setIsActive(activeMode.id === mode.id);
-    }, [activeMode]);
+    }, [activeMode.id, mode.id]);
 
     const theme = useTheme(),
         isPhoneOrTablet = useMediaQuery(theme.breakpoints.down("sm"));

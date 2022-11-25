@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState, useCallback} from "react";
 import Map from "../../components/Map";
-import {UserCtx} from "../../providers/User/User";
-import {NavCtx} from "../../providers/Navigation/Navigation";
+import {UserCtx} from "../../providers/User";
+import {NavCtx} from "../../providers/Navigation";
 import {Coords} from "google-map-react";
 import {BathroomsSearch, PlacesSearch} from "../../../utils/PlacesSearch";
 import PlacesList from "../../components/PlacesList";
@@ -17,7 +17,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     useEffect(() => {
         console.info(`${loggingTag} setting center to`, userContext.location.coordinates);
         setCenter(userContext.location.coordinates);
-    }, [userContext]);
+    }, [userContext, loggingTag]);
 
     // @ts-ignore
     const handleGoogLoaded = ({map, maps} = {}) => {

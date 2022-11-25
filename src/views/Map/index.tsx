@@ -2,8 +2,8 @@ import React, {useCallback, useContext, useEffect, useState} from "react";
 import {ChangeEventValue, Coords} from "google-map-react";
 
 import {Box} from "@mui/material";
-import {UserCtx} from "../../providers/User/User";
-import {NavCtx} from "../../providers/Navigation/Navigation";
+import {UserCtx} from "../../providers/User";
+import {NavCtx} from "../../providers/Navigation";
 
 import Map from "../../components/Map";
 import Marker from "../../components/Map/Marker";
@@ -43,7 +43,7 @@ const MapView = (props: MapViewProps) => {
         } else {
             console.error(`don't have the user's permission. ruh roh`);
         }
-    }, []);
+    }, [userContext.location]);
 
     const getDestinations = useCallback( () => {
         if(map){//only call this function is usermap is available
