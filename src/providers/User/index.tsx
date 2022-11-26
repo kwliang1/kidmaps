@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useMemo, useState} from "react";
+import React, {createContext, useEffect, useState} from "react";
 import {Coords} from "google-map-react";
 
 class UserLocation {
@@ -140,7 +140,7 @@ const UserContextProvider = (props: React.PropsWithChildren) => {
         if(location){
             setUser({...user, location});
         }
-    }, [location, user]);
+    }, [location]);
 
     return (
         <UserCtx.Provider value={user}>
