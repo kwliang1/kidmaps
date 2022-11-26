@@ -140,7 +140,7 @@ const UserContextProvider = (props: React.PropsWithChildren) => {
         if(location){
             setUser({...user, location});
         }
-    }, [location]);
+    }, [location, user]);
 
     return (
         <UserCtx.Provider value={user}>
