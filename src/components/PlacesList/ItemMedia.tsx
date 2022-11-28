@@ -42,15 +42,10 @@ const ItemMedia = (props:ItemMediaInterface) => {
     const src = props?.src ? props.src : props.getUrl({maxHeight:140});
     return(
         <CardMedia
-            sx={{
-                width: '200px',
-                position: "relative"
-            }}
-            component={OptimizedImage}
+            component={"img"}
+            image={src}
             height={180}
             alt={alt}
-            url={src}
-            image={src}
         />
     )
 }
