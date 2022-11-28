@@ -14,6 +14,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     const [map, setMap] = useState();
     const [center, setCenter] = useState<Coords>();
     const [destinations, setDestinations] = useState<google.maps.places.PlaceResult[]>();
+    const [error, setError] = useState<google.maps.places.PlacesServiceStatus | null>(null);
 
     useEffect(() => {
         console.info(`${loggingTag} setting center to`, userContext.location.coordinates);
@@ -51,6 +52,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
             : new PlacesSearch(map);
 
         setDestinations([]);
+        setError(null);
 
         search?.byKeyword({
             requestOptions : {
@@ -68,6 +70,9 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
             }
         })
         .catch(e => {
+            if(e === google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
+                setError(e);
+            }
             console.error(e);
         })
     }, [center, mode.id, mode.keyword, mode.type, map, updateDestinations]);
@@ -85,6 +90,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
                 onGoogleApiLoaded={handleGoogLoaded}
             />
             <PlacesList
+                error={error}
                 places={destinations}
             />
         </>

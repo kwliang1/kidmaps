@@ -71,7 +71,11 @@ class PlacesSearch {
 							}
 							return finalResult;
 						});
-						resolve(updatedResults);
+						if(options.id === "bathrooms"){
+							reject(google.maps.places.PlacesServiceStatus.ZERO_RESULTS);
+						} else {
+							resolve(updatedResults);
+						}
 					} catch (e) {
 						reject(e);
 					}

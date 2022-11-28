@@ -3,13 +3,16 @@ import Nav from "../Nav";
 import {Box, Typography} from "@mui/material";
 import PlacesListItem from "./Item";
 import PlacesPending from "./Pending";
+import PlacesSearchError from "./PlacesSearchError";
+import VerticalCenter from "../Utils/VerticalCenter";
 
 interface PlacesListInterface extends React.ComponentProps<any> {
-    places: google.maps.places.PlaceResult[] | undefined
+    places: google.maps.places.PlaceResult[] | undefined;
+    error?: google.maps.places.PlacesServiceStatus | undefined;
 }
 
 const PlacesList = (props:PlacesListInterface) => {
-    const {places} = props;
+    const {places, error} = props;
     return (
         <Box
             sx={{
@@ -28,7 +31,7 @@ const PlacesList = (props:PlacesListInterface) => {
                     paddingTop: 2
                 }}
             >
-                <Box>
+                {/*<Box>*/}
                     {
                         (Array.isArray(places) && places.length > 0) ? places.map((place, index) => (
                             <PlacesListItem
@@ -36,10 +39,23 @@ const PlacesList = (props:PlacesListInterface) => {
                                 place={place}
                             />
                         )) : (
-                            <PlacesPending/>
+                            <VerticalCenter
+                                height={300}
+                            >
+                                {
+                                    error ? (
+                                        <PlacesSearchError
+                                            error={error}
+                                        />
+                                    ) : (
+                                        <PlacesPending/>
+                                    )
+                                }
+                            </VerticalCenter>
                         )
+
                     }
-                </Box>
+                {/*</Box>*/}
             </Box>
         </Box>
     )
