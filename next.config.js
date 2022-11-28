@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   images: {
-    domain: ['maps.googleapis.com'],
+    domain: ['maps.googleapis.com', '*.googleusercontent.com'],
   }
 }
 
