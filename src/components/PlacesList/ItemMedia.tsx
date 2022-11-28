@@ -21,8 +21,10 @@ const OptimizedImage = (props: OptimizedImageInterface) => {
             }}
         >
             <Image
-                objectFit={"cover"}
-                layout={"fill"}
+                fill={true}
+                style={{
+                    objectFit: "cover"
+                }}
                 src={url}
                 alt={alt}
             />
