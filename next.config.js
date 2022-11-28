@@ -7,7 +7,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'maps.googleapis.com',
-        pathname: '/maps/api/place/js/**'
+        pathname: '/maps/api/place/js/PhotoService.GetPhoto**'
       },
       {
         protocol: 'https',
