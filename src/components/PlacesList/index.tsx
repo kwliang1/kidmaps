@@ -8,7 +8,7 @@ import VerticalCenter from "../Utils/VerticalCenter";
 
 interface PlacesListInterface extends React.ComponentProps<any> {
     places: google.maps.places.PlaceResult[] | undefined;
-    error?: google.maps.places.PlacesServiceStatus | undefined;
+    error?: google.maps.places.PlacesServiceStatus | null;
 }
 
 const PlacesList = (props:PlacesListInterface) => {
