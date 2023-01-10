@@ -33,11 +33,11 @@ class PlacesSearch {
 	tag: string;
 	pending: boolean;
 
-	constructor(map:any | null) {
+	constructor(map:any | null, tag: undefined | string) {
 		this.map = map;
 		this.results = [];
 		this.pending = false;
-		this.tag = `[PlacesSearch]`;
+		this.tag = tag ? tag : `[PlacesSearch]`;
 	}
 
 	byKeyword(requirements: SearchRequirements):Promise<PlaceSearchResult[] | null> {
@@ -71,11 +71,8 @@ class PlacesSearch {
 							}
 							return finalResult;
 						});
-						if(options.id === "bathrooms"){
-							reject(google.maps.places.PlacesServiceStatus.ZERO_RESULTS);
-						} else {
-							resolve(updatedResults);
-						}
+
+						resolve(updatedResults);
 					} catch (e) {
 						reject(e);
 					}
@@ -92,6 +89,9 @@ class PlacesSearch {
 
 class BathroomsSearch extends PlacesSearch {
 
+	constructor(map:any | null) {
+		super(map, '[BathroomsSearch]');
+	}
 	async byKeyword(requirements:SearchRequirements):Promise<PlaceSearchResult[] | null> {
 		const results = await super.byKeyword(requirements);
 		if(results){
@@ -102,6 +102,7 @@ class BathroomsSearch extends PlacesSearch {
 
 	validatePlaces(places: PlaceSearchResult[]){
 		return places.filter(place => {
+			console.info(`Is valid bathroom? ${this.isValidBathroom(place)}`);
 			return this.isValidBathroom(place);
 		});
 	}

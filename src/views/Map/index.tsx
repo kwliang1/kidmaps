@@ -9,7 +9,7 @@ import Map from "../../components/Map";
 import Marker from "../../components/Map/Marker";
 import MapStatus from "../../components/Map/Status";
 
-import {PlacesSearch} from "../../../utils/PlacesSearch";
+import {BathroomsSearch, PlacesSearch} from "../../../utils/PlacesSearch";
 
 interface MapViewProps extends React.ComponentProps<any>{
 
@@ -20,7 +20,6 @@ const MapView = (props: MapViewProps) => {
     const {mode} = useContext(NavCtx);
     // console.info(`current user mode`, mode);
 
-    const [search, setSearch] = useState<PlacesSearch | undefined>();
     const [destinations, setDestinations] = useState<google.maps.places.PlaceResult[] | undefined>();
     const [coordinates, setCoordinates] = useState<Coords>(userContext.location.coordinates);
     const [map, setMap] = useState<google.maps.Map | undefined>();
@@ -46,7 +45,14 @@ const MapView = (props: MapViewProps) => {
     }, [userContext.location]);
 
     const getDestinations = useCallback( () => {
+        const loggingTag = `[getDestinations]`;
         if(map){//only call this function is usermap is available
+            console.info(`${loggingTag} mode`, mode);
+            const search = mode.id === "bathrooms" ? new BathroomsSearch(map)
+                : new PlacesSearch(map);
+
+            console.info(`${loggingTag} search`, search);
+
             let mapViewSearchRequirements = {
                 requestOptions:{
                     id: mode.id,
@@ -71,19 +77,13 @@ const MapView = (props: MapViewProps) => {
                     }
                 })
         }
-    }, [mode, map, search]);
-
-    useEffect( () => {
-        if(map !== null){//the google js lib has been initialized
-            setSearch(new PlacesSearch(map));
-        }
-    }, [map]);
+    }, [mode, map]);
 
     useEffect(() => {
-        if(search){
+        if(map){
             getDestinations();
         }
-    }, [search, getDestinations, coordinates]);
+    }, [map, getDestinations, coordinates]);
 
     // @ts-ignore
     const handleGoogleApiResponse = ({map} = {}) => {

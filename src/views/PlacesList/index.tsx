@@ -48,6 +48,7 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     },[currentModeID]);//intentionally setting no dependencies so that we will only render the results for the latest mode.
 
     const getDestinations = useCallback( () => {
+        console.info(`[getDestinations] mode:`, mode);
         const search = mode.id === "bathrooms" ? new BathroomsSearch(map)
             : new PlacesSearch(map);
 
