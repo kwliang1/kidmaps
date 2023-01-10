@@ -33,7 +33,7 @@ class PlacesSearch {
 	tag: string;
 	pending: boolean;
 
-	constructor(map:any | null, tag: undefined | string) {
+	constructor(map:any | null, tag?: string) {
 		this.map = map;
 		this.results = [];
 		this.pending = false;

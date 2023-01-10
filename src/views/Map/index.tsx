@@ -67,6 +67,7 @@ const MapView = (props: MapViewProps) => {
                     console.info(`results`, results);
                     if(Array.isArray(results)) {
                         setDestinations(results);
+                        setSearchStatus(false);
                     }
                 })
                 .catch(e => {
