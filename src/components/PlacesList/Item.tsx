@@ -17,7 +17,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
     // console.info(`${loggingTag} props`, props);
 
     const {place} = props;
-    const user = useContext(UserCtx);
+    const {location} = useContext(UserCtx);
     const [directions, setDirections] = useState<google.maps.DirectionsLeg | null>(null);
     const {ref, inView, entry} = useInView({
         threshold: 0,
@@ -26,10 +26,10 @@ const PlacesListItem = (props: PlacesListItemProps) => {
     });
 
     const getDistanceToDestination = useCallback(() => {
-        if(place?.geometry?.location){
+        if(place?.geometry?.location && location){
             let service = new google.maps.DirectionsService();
             service.route({
-                origin: user.location.coordinates,
+                origin: location,
                 destination: place.geometry.location,
                 travelMode: google.maps.TravelMode.WALKING//default to walking
             }, (resp: google.maps.DirectionsResult | null) => {
@@ -41,7 +41,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
                 }
             });
         }
-    }, [user, loggingTag, place?.geometry?.location, place.name]);
+    }, [location, loggingTag, place?.geometry?.location, place.name]);
 
     useEffect(() => {
         if(inView){
@@ -53,11 +53,11 @@ const PlacesListItem = (props: PlacesListItemProps) => {
     // console.info(`${loggingTag} place`, place);
 
     const openDirectionsUrl = useCallback(() => {
-        if(place?.geometry?.location){
-            const url = new DirectionsUrl(user.location.coordinates, place.geometry.location, place.place_id);
+        if(place?.geometry?.location && location){
+            const url = new DirectionsUrl(location, place.geometry.location, place.place_id);
             window.open(url.href);
         }
-    }, [place?.geometry?.location, place.place_id, user.location.coordinates]);
+    }, [place?.geometry?.location, place.place_id, location]);
 
     return (
         <Card
