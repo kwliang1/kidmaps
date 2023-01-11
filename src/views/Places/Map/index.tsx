@@ -17,33 +17,14 @@ interface MapViewProps extends React.ComponentProps<any>{
 }
 
 const MapView = (props: MapViewProps) => {
-    const userContext = useContext(UserCtx);
+    const {location} = useContext(UserCtx);
     const {filter} = useContext(NavCtx);
     // console.info(`current user mode`, mode);
     const places = useContext(PlacesContext);
     const updatePlaces = useContext(PlacesDispatchContext);
-    const [coordinates, setCoordinates] = useState<Coords>(userContext.location.coordinates);
+    const [coordinates, setCoordinates] = useState<Coords|undefined>(location);
     const [map, setMap] = useState<google.maps.Map | undefined>();
     const [searchStatus, setSearchStatus] = useState<boolean | string>(false);
-
-    useEffect(() => {
-        if(navigator.geolocation){
-            console.info(`already have the user's location permission!`);
-            userContext.location.getFromBrowser()
-                .then((result) => {
-                    console.info(result);
-                    if(result){
-                        setCoordinates(result);
-                    }
-                })
-                .catch(e => {
-                    console.error(`Error occurred retrieving user's location:`, e);
-                });
-            //setting the user's coordinates
-        } else {
-            console.error(`don't have the user's permission. ruh roh`);
-        }
-    }, [userContext.location]);
 
     const getDestinations = useCallback( () => {
         const loggingTag = `[getDestinations]`;
