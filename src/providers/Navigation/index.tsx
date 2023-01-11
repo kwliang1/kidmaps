@@ -1,70 +1,44 @@
 import React from "react";
 import { useState, createContext, useCallback, useMemo} from "react";
-
-export interface Mode {
-    id: string;
-    name: string;
-    keyword: string;
-    type: string;
-}
-
-const appModes: Mode[] = [
-    {
-        name: "Bathrooms",
-        id: "bathrooms",
-        keyword: "bathrooms",
-        type: "point_of_interest"
-    },
-    {
-        name: "Parks",
-        id: "parks",
-        keyword: "parks",
-        type: "park"
-    },
-    {
-        name: "Treats",
-        id: "ice_cream",
-        keyword: "ice cream cupcakes cakes",
-        type: "point_of_interest"
-    },
-    // {
-    //     name: "Restaurants",
-    //     id: "restaurants",
-    //     keyword: "restaurants",
-    //     type: "restaurant"
-    // }
-]
+import {PlaceFilter, placeFilters} from "./filters";
+import {View, views} from "./views";
 
 interface NavigationContextInterface {
-    mode: Mode;
+    filter: PlaceFilter;
+    view: View;
     updateMode: Function;
 }
 
 const defaultNavContext: NavigationContextInterface = {
-    mode: appModes[0],
+    filter: placeFilters[0],
+    view: views[0],
     updateMode: (): void  => {},
 }
 
 const NavCtx = createContext<NavigationContextInterface>(defaultNavContext as NavigationContextInterface);
 
 const NavContextProvider = (props: React.PropsWithChildren) => {
-    const initialMode = appModes[0]
-    console.info(`initial mode`, initialMode);
-    const [mode, setMode] = useState(initialMode);
+    const loggingTag = `[NavContextProvider]`;
+    console.info(`${loggingTag} props`, props);
+    const initialMode = placeFilters[0]
+    console.info(`${loggingTag} initial mode`, initialMode);
+    const [filter, setFilter] = useState(initialMode);
+    const [view, setView] = useState(views[0]);
 
-    const updateMode = useCallback((newMode: Mode) => {
+    const updateMode = useCallback((newMode: PlaceFilter) => {
         console.info(`setting new mode!`, newMode);
-        setMode(newMode);
+        setFilter(newMode);
     }, []);
 
     const contextValue = useMemo(() => ({
-        mode,
+        filter: filter,
+        view,
         updateMode
-    }), [mode, updateMode]);
+    }), [filter, updateMode]);
     return (
         <NavCtx.Provider value={contextValue}>
             {props.children}
         </NavCtx.Provider>
     )
 }
-export {NavCtx, NavContextProvider, appModes};
+export {NavCtx, NavContextProvider};

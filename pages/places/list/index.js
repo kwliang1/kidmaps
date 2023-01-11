@@ -1,4 +1,4 @@
-import PlacesListView from "../../../src/views/PlacesList";
+import PlacesListView from "../../../src/views/Places/List";
 
 const ListPage = () => {
 	return(

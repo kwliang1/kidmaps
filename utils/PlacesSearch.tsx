@@ -102,7 +102,7 @@ class BathroomsSearch extends PlacesSearch {
 
 	validatePlaces(places: PlaceSearchResult[]){
 		return places.filter(place => {
-			console.info(`Is valid bathroom? ${this.isValidBathroom(place)}`);
+			// console.info(`Is valid bathroom? ${this.isValidBathroom(place)}`);
 			return this.isValidBathroom(place);
 		});
 	}

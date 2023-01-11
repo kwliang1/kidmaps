@@ -1,37 +1,35 @@
 import type { NextPage } from 'next';
-import { useMediaQuery } from 'react-responsive';
-import { useEffect, useState } from "react";
-
 import Index from "../src/components/Layout";
-import MapView from "../src/views/Map";
-import PlacesListView from "../src/views/PlacesList";
 import { NavContextProvider } from "../src/providers/Navigation";
 import { UserContextProvider } from "../src/providers/User";
+import {PlacesProvider} from "../src/providers/Places";
+import {ViewProvider} from "../src/providers/Navigation/views";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+import {useTheme} from "@mui/material/styles";
 
 
 const Home: NextPage = () => {
-    const [hydrated, setHydrated] = useState(false);
-    const isTabletOrMobile = useMediaQuery(
-{maxWidth:1224, orientation: "portrait"},
-hydrated ? undefined : { width: 1224 }
-    );
+    const loggingTag = `[Home]`;
 
-    useEffect(() => {
-        setHydrated(true);//this will only get triggered once the user is in the browser. 11.18.22 KL
-    }, []);
+    const theme = useTheme(),
+        isTabletOrMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+    console.info(`${loggingTag} render`, isTabletOrMobile);
 
     return (
         <UserContextProvider>
             <NavContextProvider>
-                <Index>
-                    {
-                        isTabletOrMobile ? (
-                            <PlacesListView/>
-                        ):(
-                            <MapView/>
-                        )
-                    }
-                </Index>
+                <ViewProvider
+                    isTabletOrMobile={isTabletOrMobile}
+                >
+                    <PlacesProvider>
+                        <Index
+                            isTabletOrMobile={isTabletOrMobile}
+                        >
+                        </Index>
+                    </PlacesProvider>
+                </ViewProvider>
             </NavContextProvider>
         </UserContextProvider>
     )

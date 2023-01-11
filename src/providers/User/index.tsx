@@ -128,20 +128,7 @@ const UserCtx = createContext<UserContextInterface>(defaultUserContext as UserCo
 const UserContextProvider = (props: React.PropsWithChildren) => {
     console.info(`[UserContextProvider] props`, props);
     const {children} = props;
-    const [location, setLocation] = useState<UserLocation | undefined>();
     const [user, setUser] = useState<UserContextInterface>(defaultUserContext);
-
-    // useEffect(() => {
-    //     console.info(`user`, user);
-    //     const currentLocation = new UserLocation();
-    //     setLocation(currentLocation);
-    // }, []);
-    //
-    // useEffect(() => {
-    //     if(location){
-    //         setUser({...user, location});
-    //     }
-    // }, [location]);
 
     return (
         <UserCtx.Provider value={user}>

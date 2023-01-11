@@ -1,16 +1,18 @@
 import React, {useContext, useEffect, useState, useCallback, useRef} from "react";
-import Map from "../../components/Map";
-import {UserCtx} from "../../providers/User";
-import {NavCtx} from "../../providers/Navigation";
+import Map from "../../../components/Map";
+import {UserCtx} from "../../../providers/User";
+import {NavCtx} from "../../../providers/Navigation";
 import {Coords} from "google-map-react";
-import {BathroomsSearch, PlaceSearchResult, PlacesSearch} from "../../../utils/PlacesSearch";
-import PlacesList from "../../components/PlacesList";
+import {BathroomsSearch, PlaceSearchResult, PlacesSearch} from "../../../../utils/PlacesSearch";
+import PlacesList from "../../../components/PlacesList";
+import {PlacesDispatchContext} from "../../../providers/Places";
 
 const PlacesListView = (props: React.ComponentProps<any>) => {
     const loggingTag = `[PlacesList]`;
     const userContext = useContext(UserCtx);
-    const {mode} = useContext(NavCtx);
-    const currentModeID = useRef(mode.id);
+    const {filter} = useContext(NavCtx);
+    const updatePlaces = useContext(PlacesDispatchContext);
+    const currentModeID = useRef(filter.id);
     const [map, setMap] = useState();
     const [center, setCenter] = useState<Coords>();
     const [destinations, setDestinations] = useState<google.maps.places.PlaceResult[]>();
@@ -23,8 +25,8 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
 
     useEffect(()=>{
         //keep[ing the current mode ID up to date
-        currentModeID.current = mode.id;
-    }, [mode.id]);
+        currentModeID.current = filter.id;
+    }, [filter.id]);
 
     // @ts-ignore
     const handleGoogLoaded = ({map} = {}) => {
@@ -34,22 +36,9 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
         }
     }
 
-    const updateDestinations = useCallback((results: PlaceSearchResult[]) => {
-        const loggingTag = `[updateDestinations]`;
-
-        if(
-            Array.isArray(results) &&
-            results.length > 0 &&
-            (results[0]?.id === currentModeID.current)
-        ){
-            console.info(`${loggingTag} results id: ${results[0].id}, mode id: ${currentModeID.current}, check:${results[0]?.id === currentModeID.current}`)
-            setDestinations(results);
-        }
-    },[currentModeID]);//intentionally setting no dependencies so that we will only render the results for the latest mode.
-
     const getDestinations = useCallback( () => {
-        console.info(`[getDestinations] mode:`, mode);
-        const search = mode.id === "bathrooms" ? new BathroomsSearch(map)
+        console.info(`[getDestinations] mode:`, filter);
+        const search = filter.id === "bathrooms" ? new BathroomsSearch(map)
             : new PlacesSearch(map);
 
         setDestinations([]);
@@ -57,32 +46,42 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
 
         search?.byKeyword({
             requestOptions : {
-                id: mode.id,
-                keyword: mode.keyword,
-                type: mode.type,
+                id: filter.id,
+                keyword: filter.keyword,
+                type: filter.type,
                 location: center,
                 rankBy: google.maps.places.RankBy.DISTANCE
             }
         })
         .then(( results: (PlaceSearchResult[] | null)) => {
-            if(results){
+            if(
+                results &&
+                updatePlaces
+            ){
                 console.info(`Place Search results`, results);
-                updateDestinations(results);
+                // updateDestinations(results);
+                updatePlaces({
+                    type: 'replace',
+                    places: results
+                });
             }
         })
         .catch(e => {
             if(e === google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
                 setError(e);
+                updatePlaces({
+                    type: "empty"
+                })
             }
             console.error(e);
         })
-    }, [center, mode.id, mode.keyword, mode.type, map, updateDestinations]);
+    }, [center, filter.id, filter.keyword, filter.type, map]);
 
     useEffect(() => {
         if(map){
             getDestinations();
         }
-    }, [map, getDestinations, mode]);
+    }, [map, getDestinations, filter]);
 
     return (
         <>
@@ -92,7 +91,6 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
             />
             <PlacesList
                 error={error}
-                places={destinations}
             />
         </>
     )

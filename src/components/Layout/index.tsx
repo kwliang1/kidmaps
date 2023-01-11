@@ -1,39 +1,51 @@
 import {Box} from "@mui/material";
-import React, {useEffect, useState} from "react";
-import {useMediaQuery} from "react-responsive";
+import React from "react";
 import Nav from "../Nav";
+import PlacesView from "../../views/Places";
 
-const Index = (props:React.ComponentProps<any> ) => {
-	const [hydrated, setHydrated] = useState(false);
-	const isTabletOrMobile = useMediaQuery(
-		{maxWidth:1224, orientation: "portrait"},
-		hydrated ? undefined : { width: 1224 }
-	);
-	
-	useEffect(() => {
-		setHydrated(true);//this will only get triggered once the user is in the browser. 11.18.22 KL
-	}, []);
-	
+const defaultContainerStyle = {
+	display: "flex",
+}
+
+const Index = (props:any) => {
+	const {children, isTabletOrMobile} = props;
+
+
+	const containerStyles = isTabletOrMobile ? {
+		...defaultContainerStyle,
+        flexDirection: "column",
+		        alignItems: "stretch",
+		        maxHeight: "100vh"
+	} : {
+		...defaultContainerStyle,
+	};
 	return (
-			isTabletOrMobile ? (
-				<Box>
-					{props.children}
-				</Box>
-			) : (
+			// isTabletOrMobile ? (
 				<Box
-					sx={{display: "flex"}}
+					sx={containerStyles}
 				>
 					<Nav/>
-					<Box
-						sx={{
-							display: "flex",
-							flexGrow: 1
-						}}
-					>
-						{props.children}
-					</Box>
+					<PlacesView
+						isTabletOrMobile={isTabletOrMobile}
+					/>
 				</Box>
-			)
+			// ) : (
+			// 	<Box
+			// 		sx={{
+			// 			display: isTabletOrMobile ? "block" : "flex"
+			// 	}}
+			// 	>
+			// 		<Nav/>
+			// 		<Box
+			// 			sx={{
+			// 				display: "flex",
+			// 				flexGrow: 1
+			// 			}}
+			// 		>
+			// 			<PlacesView/>
+			// 		</Box>
+			// 	</Box>
+			// )
 	)
 }
 

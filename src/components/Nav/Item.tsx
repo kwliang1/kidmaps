@@ -1,43 +1,42 @@
-import {Mode, NavCtx} from "../../providers/Navigation";
+import {NavCtx} from "../../providers/Navigation";
+import {View, ViewContext} from "../../providers/Navigation/views";
 import {useContext, useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {Chip, ListItemButton, ListItemText} from "@mui/material";
+import {BottomNavigationAction, Chip, IconButton, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import NavIcon from "./Icon";
 
 interface NavItemProps {
     key: string,
-    mode: Mode
+    view: View
 }
 
 const NavItem = (props: NavItemProps) => {
     const loggingTag = `[NavItem]`;
-    const {mode} = props;
-    const {mode:activeMode, updateMode} = useContext(NavCtx);
+    const {view} = props;
+    const {filter:activeMode, updateMode} = useContext(NavCtx);
+    const {setView} = useContext(ViewContext);
+
     const [isActive, setIsActive] = useState<boolean>(false);
 
     useEffect(() => {
         // console.info(`${loggingTag} is active? `, activeMode.id === mode.id);
-        setIsActive(activeMode.id === mode.id);
-    }, [activeMode.id, mode.id]);
+        setIsActive(activeMode.id === view.id);
+    }, [activeMode.id, view.id]);
 
     const theme = useTheme(),
         isPhoneOrTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
     const navItemOnClick = () => {
-        updateMode(mode);
+        setView(view);
     }
     // console.info(`${loggingTag} mode`, activeMode);
 
     if(isPhoneOrTablet){
         return (
-            <Chip
-                onClick={navItemOnClick}
-                label={mode.name}
-                variant={isActive? "filled" : "outlined"}
-                color={"primary"}
-                sx={{
-                    margin: "0px 4px"
-                }}
+            <BottomNavigationAction
+                label={view.label}
+                icon={view.icon}
             />
         )
     } else {
@@ -45,13 +44,16 @@ const NavItem = (props: NavItemProps) => {
             <ListItemButton
                 onClick={navItemOnClick}
             >
+                <ListItemIcon>
+                    {view.icon}
+                </ListItemIcon>
                 <ListItemText
                     sx={{
                         '& .MuiListItemText-primary':{
                             fontWeight: isActive ? "bold" : "default"
                         }
                     }}
-                >{mode.name}</ListItemText>
+                >{view.label}</ListItemText>
             </ListItemButton>
         )
     }

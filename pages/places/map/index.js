@@ -1,4 +1,4 @@
-import MapView from "../../../src/views/Map";
+import MapView from "../../../src/views/Places/Map";
 
 const MapPage = () => {
 	return(

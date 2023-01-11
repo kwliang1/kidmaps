@@ -1,7 +1,6 @@
-
-import {Drawer, List, Box} from "@mui/material";
-import {Mode} from "../../providers/Navigation";
-import {appModes} from "../../providers/Navigation";
+import React, {useContext, useState} from "react";
+import {Drawer, List, Paper, BottomNavigation, BottomNavigationAction} from "@mui/material";
+import {views, View, ViewContext, ViewUpdateContext} from "../../providers/Navigation/views";
 import {useTheme} from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery";
 import NavItem from "./Item";
@@ -17,26 +16,42 @@ const Nav = (props : NavProps) => {
 
     console.info(`${loggingTag} phone or tablet`, isPhoneOrTablet);
 
+    const {view, setView} = useContext(ViewContext);
+    const navUpdated = (e:React.SyntheticEvent, value:View) => {
+        // console.info(`${loggingTag}[val:${value}] event:`, e);
+        console.info(`navUpdated new val:`, value);
+        setView(value);
+    };
+
     if(isPhoneOrTablet){
         return (
-            <Box
+            <Paper
                 sx={{
-                    display: "flex",
-                    paddingTop: 2,
-                    paddingBottom: 2,
-                    justifyContent: "center",
-                    borderBottom: "1px solid #e0e0e0"
+                    zIndex: 1,
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 0,
+                    right: 0
                 }}
+                elevation={3}
             >
-                {
-                    appModes.map((mode, index) => (
-                        <NavItem
-                            key={`${mode.id}-${index}`}
-                            mode={mode}
-                        />
-                    ))
-                }
-            </Box>
+                <BottomNavigation
+                    showLabels
+                    value={view}
+                    onChange={navUpdated}
+                >
+                    {
+                        views.map((view, index) => (
+                            <BottomNavigationAction
+                                key={view.id}
+                                label={view.label}
+                                icon={view.icon}
+                                value={view}
+                            />
+                        ))
+                    }
+                </BottomNavigation>
+            </Paper>
         )
     } else {
         const width = 200;//desktop view nav width
@@ -58,10 +73,10 @@ const Nav = (props : NavProps) => {
             >
                 <List>
                     {
-                        appModes.map((mode: Mode, index: number) => (
+                        views.map((view:View, index: number) => (
                             <NavItem
-                                key={`${mode.id}-${index}`}
-                                mode={mode}
+                                key={`${view.id}-${index}`}
+                                view={view}
                             />
                         ))
                     }
