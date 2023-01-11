@@ -1,7 +1,7 @@
 import React from "react";
-import GoogleMapReact, {Props, Coords} from "google-map-react";
-interface MapComponentProps extends React.ComponentProps<any>, Props{
-    center?: Coords;
+import GoogleMapReact, {Props} from "google-map-react";
+interface MapComponentProps extends React.ComponentProps<any>, Props {
+
 }
 
 const defaultMapProps:MapComponentProps = {
@@ -17,8 +17,8 @@ const defaultMapProps:MapComponentProps = {
     layerTypes: ['TransitLayer'],
 }
 
-const Map = (props:MapComponentProps) => {
-    // const loggingTag = `[Map]`
+const KidsMap = (props:MapComponentProps) => {
+    const loggingTag = `[KidsMap]`
     // console.info(`${loggingTag} props`, props);
     return (
         <GoogleMapReact
@@ -27,7 +27,7 @@ const Map = (props:MapComponentProps) => {
             defaultZoom={props.zoom}
             layerTypes={props.layerTypes}
             onGoogleApiLoaded={props.onGoogleApiLoaded}
-            {...(props.onChange && {onChange:props.onChange})}
+            {...(props.onChange && {onChange: props.onChange})}
             {...(props.onDrag && {onDrag:props.onDrag})}
         >
             {props.children}
@@ -35,6 +35,6 @@ const Map = (props:MapComponentProps) => {
     )
 }
 
-Map.defaultProps = defaultMapProps;
+KidsMap.defaultProps = defaultMapProps;
 
-export default Map;
+export default KidsMap;

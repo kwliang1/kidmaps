@@ -9,7 +9,7 @@ import {PlacesDispatchContext} from "../../../providers/Places";
 
 const PlacesListView = (props: React.ComponentProps<any>) => {
     const loggingTag = `[PlacesList]`;
-    const userContext = useContext(UserCtx);
+    const {location} = useContext(UserCtx);
     const {filter} = useContext(NavCtx);
     const updatePlaces = useContext(PlacesDispatchContext);
     const currentModeID = useRef(filter.id);
@@ -19,9 +19,11 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     const [error, setError] = useState<google.maps.places.PlacesServiceStatus | null>(null);
 
     useEffect(() => {
-        console.info(`${loggingTag} setting center to`, userContext.location.coordinates);
-        setCenter(userContext.location.coordinates);
-    }, [userContext.location.coordinates, loggingTag]);
+        if(location){
+            console.info(`${loggingTag} setting center to`, location);
+            setCenter(location);
+        }
+    }, [location, loggingTag]);
 
     useEffect(()=>{
         //keep[ing the current mode ID up to date

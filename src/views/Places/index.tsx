@@ -2,8 +2,8 @@ import React, {useContext} from "react";
 import {ViewContext} from "../../providers/Navigation/views";
 import MapView from "./Map";
 import ListView from "./List";
-interface PlacesViewPropsInterface extends React.PropsWithChildren{
-    isTabletOrMobile: boolean
+interface PlacesViewPropsInterface extends React.PropsWithChildren {
+
 }
 const PlacesView = (props: PlacesViewPropsInterface) => {
     const loggingTag = `[PlacesView]`;

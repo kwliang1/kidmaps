@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useEffect, useState, useCallback} from "react";
 import {Coords} from "google-map-react";
 
 class UserLocation {
@@ -15,6 +15,9 @@ class UserLocation {
 
     get coordinates():Coords{
         return this._coordinates;
+    }
+    get permission():UserLocationPermission{
+        return this._permission;
     }
 
     set current(location:Coords){
@@ -46,60 +49,56 @@ class UserLocation {
         localStorage.setItem(this._localstorage_key, JSON.stringify(location));
     }
 
-    getFromBrowser(): Promise<Coords> {
-        return new Promise((resolve, reject)=> {
-            if(navigator.geolocation){//just checks if it's been supported
-                const permissionStatus = this._permission.status;
-                if(permissionStatus === "unknown"){
-                    this._permission.getCurrentStatusFromBrowser()
-                        .then(() => {
-                          this.getFromBrowser();//recursively call itself
-                        })
-                } else if (permissionStatus.state === "denied"){
-                    console.error(`${this.tag} Permission denied :(`);
-                } else {//granted or prompt
-                    navigator.geolocation.getCurrentPosition(
-                        (result: GeolocationPosition) => {
-                            console.info(`user location result`, result);
-                            const {coords} = result,
-                                {latitude:lat, longitude:lng} = coords;
-                            console.info(`setting coordinates to lat:${lat} long:${lng}`);
-                            this.current = {
-                                lat,
-                                lng
-                            };//this will update the class, as well as the local storage key to be retrieved at a later time 11.2.22 KL
-                            resolve(this.current);
-                        },
-                        (positionError: GeolocationPositionError) => {
-                            console.error(`Error occurred getting user location`, positionError);
-                            reject(positionError);
-                        }
-                    )
+    update():Promise<Coords>{
+
+        return new Promise((resolve, reject) => {
+
+            navigator.geolocation.getCurrentPosition(
+                (result: GeolocationPosition) => {
+                    console.info(`user location result`, result);
+                    const {coords} = result,
+                        {latitude:lat, longitude:lng} = coords;
+                    console.info(`setting coordinates to lat:${lat} long:${lng}`);
+                    this.permission.state = "granted";
+                    const coordinates = {
+                        lat,
+                        lng
+                    }
+                    this.current = coordinates;//this will update the class, as well as the local storage key to be retrieved at a later time 11.2.22 KL
+                    resolve(coordinates);
+                },
+                (positionError: GeolocationPositionError) => {
+                    console.error(`Error occurred getting user location`, positionError);
+                    this.permission.state = "denied";
+                    reject(positionError)
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 30000//30 seconds
                 }
-            } else {
-                const errMessage = 'navigator.geolocation not available';
-                console.error(errMessage);
-                reject(new Error(errMessage));
-            }
-        });
+            )
+        })
+
     }
 
 }
 
 class UserLocationPermission {
-    status: PermissionStatus | "unknown";
+
+    state: PermissionState;
     _name: PermissionName;
     constructor() {
         this._name = "geolocation";
-        this.status = 'unknown';
+        this.state = "denied";//default to denied.
     }
-    getCurrentStatusFromBrowser():Promise<PermissionStatus|Error>{
+
+    get status():Promise<PermissionState>{
         return new Promise((resolve, reject) => {
             if(navigator.permissions){
                 navigator.permissions.query({name: this._name})
-                    .then((status) => {
-                        this.status = status;
-                        resolve(status);
+                    .then(({state}) => {
+                        this.state = state;
+                        resolve(state);
                     })
                     .catch(err => {
                         reject(err);
@@ -114,24 +113,70 @@ class UserLocationPermission {
 interface UserContextInterface {
     id: string | number;
     name: string;
-    location: UserLocation
+    requestPermission?: ()=>void;
+    permission?: UserLocationPermission["state"];
+    location?: Coords;
 }
 
 const defaultUserContext : UserContextInterface = {
     id: 0,
-    name: "",
-    location: new UserLocation()
+    name: ""
 }
 
 const UserCtx = createContext<UserContextInterface>(defaultUserContext as UserContextInterface);
 
+const userLocation = new UserLocation();//initializing now so that we can reference the cached location
+
 const UserContextProvider = (props: React.PropsWithChildren) => {
-    console.info(`[UserContextProvider] props`, props);
+    const loggingTag = `[UserContextProvider]`
     const {children} = props;
-    const [user, setUser] = useState<UserContextInterface>(defaultUserContext);
+    console.info(`${loggingTag} props`, props);
+    const [permission, setPermission] = useState<UserLocationPermission["state"]>(userLocation.permission.state);
+    const [location, setLocation] = useState<UserContextInterface["location"]>(userLocation.coordinates);
+
+    useEffect(() => {//only initial mount
+        //getting status from browser
+        userLocation.permission.status
+            .then(state => {
+                console.info(`${loggingTag} Setting permission to: ${state}`);
+                setPermission(state);
+            })
+            .catch(e => {
+                console.error(`${loggingTag} An error occurred`, e);
+            });
+    }, []);
+
+    // useEffect(() => {
+    //     console.info(`${loggingTag} user permission updated.  current state: ${permission}`);
+    // }, [permission]);
+
+    useEffect(() => {
+        setPermission(userLocation.permission.state);
+    }, [location]);
+
+    const requestPermission = useCallback( () => {
+        userLocation.update()
+            .then((coords) => {
+                setLocation(coords);
+            })
+            .catch((e) => {
+                console.error(`${loggingTag} an error occurred`, e);
+                const {message} = e;
+                if(message.includes("denied")){
+                    setPermission("denied");
+                }
+            })
+    }, []);
+
+    const context : UserContextInterface = {
+        ...defaultUserContext,
+        permission,
+        requestPermission,
+        location
+    }
 
     return (
-        <UserCtx.Provider value={user}>
+        <UserCtx.Provider value={context}>
             {children}
         </UserCtx.Provider>
     )

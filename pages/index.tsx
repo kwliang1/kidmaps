@@ -1,9 +1,10 @@
 import type { NextPage } from 'next';
-import Index from "../src/components/Layout";
+import Layout from "../src/components/Layout";
 import { NavContextProvider } from "../src/providers/Navigation";
 import { UserContextProvider } from "../src/providers/User";
 import { PlacesProvider } from "../src/providers/Places";
 import { ViewProvider } from "../src/providers/Navigation/views";
+import App from "../src/app";
 
 const Home: NextPage = () => {
     const loggingTag = `[Home]`;
@@ -15,7 +16,9 @@ const Home: NextPage = () => {
             <NavContextProvider>
                 <ViewProvider>
                     <PlacesProvider>
-                        <Index/>
+                        <Layout>
+                         <App/>
+                        </Layout>
                     </PlacesProvider>
                 </ViewProvider>
             </NavContextProvider>
