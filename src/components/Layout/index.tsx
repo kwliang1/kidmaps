@@ -2,14 +2,17 @@ import {Box} from "@mui/material";
 import React from "react";
 import Nav from "../Nav";
 import PlacesView from "../../views/Places";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const defaultContainerStyle = {
 	display: "flex",
 }
 
 const Index = (props:any) => {
-	const {children, isTabletOrMobile} = props;
 
+	const theme = useTheme(),
+		isTabletOrMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
 	const containerStyles = isTabletOrMobile ? {
 		...defaultContainerStyle,
@@ -20,32 +23,14 @@ const Index = (props:any) => {
 		...defaultContainerStyle,
 	};
 	return (
-			// isTabletOrMobile ? (
-				<Box
-					sx={containerStyles}
-				>
-					<Nav/>
-					<PlacesView
-						isTabletOrMobile={isTabletOrMobile}
-					/>
-				</Box>
-			// ) : (
-			// 	<Box
-			// 		sx={{
-			// 			display: isTabletOrMobile ? "block" : "flex"
-			// 	}}
-			// 	>
-			// 		<Nav/>
-			// 		<Box
-			// 			sx={{
-			// 				display: "flex",
-			// 				flexGrow: 1
-			// 			}}
-			// 		>
-			// 			<PlacesView/>
-			// 		</Box>
-			// 	</Box>
-			// )
+		<Box
+			sx={containerStyles}
+		>
+			<Nav/>
+			<PlacesView
+				isTabletOrMobile={isTabletOrMobile}
+			/>
+		</Box>
 	)
 }
 

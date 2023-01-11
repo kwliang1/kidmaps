@@ -1,5 +1,7 @@
 import {Map, ViewList} from "@mui/icons-material";
 import React, {ReactElement, createContext, useState, useEffect} from "react";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export interface View {
     id: string;
@@ -33,12 +35,13 @@ export const ViewUpdateContext = createContext<React.Dispatch<React.SetStateActi
 
 
 interface ViewProviderInterface extends React.PropsWithChildren {
-    isTabletOrMobile: boolean;
-
 }
 export function ViewProvider(props: ViewProviderInterface){
     const loggingTag = `[ViewProvider]`;
-    const {children, isTabletOrMobile} = props;
+    const {children} = props;
+
+    const theme = useTheme(),
+        isTabletOrMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     // const [view, setView] = useState(isTabletOrMobile ? views[0] : views[1]);
     const [view, setView] = useState(views[0]);
