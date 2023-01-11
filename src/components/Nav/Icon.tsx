@@ -1,5 +1,4 @@
 import {Map, ViewList} from "@mui/icons-material";
-import {PlaceFilter} from "../../providers/Navigation";
 
 const NavIcon = (id:any) => {
     if(id === "map"){
