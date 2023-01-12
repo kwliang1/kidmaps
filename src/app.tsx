@@ -18,12 +18,12 @@ const App = () => {
         return (
             <NavContextProvider>
                 <ViewProvider>
-                    <PlacesProvider>
-                        <MapsProvider>
+                    <MapsProvider>
+                        <PlacesProvider>
                             <Nav/>
                             <PlacesView/>
-                        </MapsProvider>
-                    </PlacesProvider>
+                        </PlacesProvider>
+                    </MapsProvider>
                 </ViewProvider>
             </NavContextProvider>
 

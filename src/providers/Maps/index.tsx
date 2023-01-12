@@ -1,7 +1,7 @@
 import {createContext, useMemo, useState} from "react";
 import KidsMap from "../../components/Map";
-import {Props} from "google-map-react";
-enum MapsLibLoadStatuses {
+
+export enum MapsLibLoadStatuses {
     UNKNOWN = "unknown",
     PENDING = "pending",
     SUCCESS = "success",
@@ -9,10 +9,14 @@ enum MapsLibLoadStatuses {
 }
 
 interface MapsContextInterface {
-
+    loaded: MapsLibLoadStatuses;
+    map?: any;
 }
 
-const MapsContext = createContext<MapsContextInterface | null>(null);
+const defaultMapsContext : MapsContextInterface = {
+    loaded: MapsLibLoadStatuses.UNKNOWN,
+}
+export const MapsCtx = createContext<MapsContextInterface>(defaultMapsContext);
 const MapsProvider = (props: React.PropsWithChildren) => {
     const loggingTag = `[MapsProvider]`;
     const {children} = props;
@@ -26,7 +30,7 @@ const MapsProvider = (props: React.PropsWithChildren) => {
             setMap(map);
         }
     }
-    const context = useMemo(() => {
+    const context:MapsContextInterface = useMemo(() => {
         console.info(`${loggingTag} updating context inside of useMemo`);
         return {
             loaded: libLoadStatus,
@@ -35,12 +39,12 @@ const MapsProvider = (props: React.PropsWithChildren) => {
     }, [libLoadStatus, map]);
 
     return (
-        <MapsContext.Provider value={context}>
+        <MapsCtx.Provider value={context}>
             <KidsMap
                 onGoogleApiLoaded={handleGoogLoaded}
             />
             {children}
-        </MapsContext.Provider>
+        </MapsCtx.Provider>
     )
 }
 

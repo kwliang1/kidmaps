@@ -1,6 +1,8 @@
-import React, {Reducer} from "react";
-import { createContext, useReducer } from "react";
-import { PlaceSearchResult } from "../../../utils/PlacesSearch";
+import React, {createContext, useCallback, useContext, useEffect, useReducer} from "react";
+import {BathroomsSearch, PlaceSearchResult, PlacesSearch} from "../../../utils/PlacesSearch";
+import {MapsCtx, MapsLibLoadStatuses} from "../Maps";
+import {NavCtx} from "../Navigation";
+import {UserCtx} from "../User";
 
 enum PlacesActionType {
     Add = 'add',
@@ -18,6 +20,54 @@ export const PlacesDispatchContext = createContext<React.Dispatch<PlacesAction>>
 
 export function PlacesProvider(props: React.PropsWithChildren) {
     const {children} = props;
+    const {map} = useContext(MapsCtx);
+    const {location} = useContext(UserCtx);
+    const {filter} = useContext(NavCtx);
+
+    const getDestinations = useCallback( () => {
+        console.info(`[getDestinations] mode:`, filter);
+        const search = filter.id === "bathrooms" ? new BathroomsSearch(map)
+            : new PlacesSearch(map);
+
+        search?.byKeyword({
+            requestOptions : {
+                id: filter.id,
+                keyword: filter.keyword,
+                type: filter.type,
+                location: location,
+                rankBy: google.maps.places.RankBy.DISTANCE
+            }
+        })
+            .then(( results: (PlaceSearchResult[] | null)) => {
+                if(
+                    results &&
+                    dispatch
+                ){
+                    console.info(`Place Search results`, results);
+                    // updateDestinations(results);
+                    dispatch({
+                        type: 'replace',
+                        places: results
+                    });
+                }
+            })
+            .catch(e => {
+                if(e === google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
+
+                    dispatch({
+                        type: "empty"
+                    })
+                }
+                console.error(e);
+            })
+    }, [location, filter.id, filter.keyword, filter.type, map]);
+
+    useEffect(() => {
+        if(map){
+            getDestinations();
+        }
+    }, [map])
+
     const [places, dispatch] = useReducer(
         placesReducer,
         initialPlaces

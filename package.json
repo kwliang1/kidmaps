@@ -18,7 +18,8 @@
     "next": "^13.0.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-intersection-observer": "^9.4.1"
+    "react-intersection-observer": "^9.4.1",
+    "swiper": "^8.4.5"
   },
   "devDependencies": {
     "@types/google-map-react": "^2.1.7",

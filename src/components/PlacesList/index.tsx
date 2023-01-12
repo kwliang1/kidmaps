@@ -12,8 +12,10 @@ interface PlacesListInterface extends React.ComponentProps<any> {
 }
 
 const PlacesList = (props:PlacesListInterface) => {
+    const loggingTag = `[PlacesList]`;
     const {error} = props;
     const places = useContext(PlacesContext);
+    console.info(`${loggingTag} places`, places);
     return (
         <Box
             sx={{
