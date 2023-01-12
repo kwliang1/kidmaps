@@ -63,43 +63,76 @@ const PlacesListItem = (props: PlacesListItemProps) => {
         <Card
             ref={ref}
             sx={{
+                height: "100%",
+                position: "relative",
                 marginBottom: 2
             }}
             variant={"outlined"}
         >
             {place?.photos && place.photos.map((photo, index) => {
-                const id = `${place.name}-${index}`;
+                const id = `${place.place_id}`;
+                console.info(`${loggingTag} photo`, photo);
+                const imageSrc = photo.getUrl({
+                    maxHeight: window.innerHeight
+                })
                 return(
-                    <ItemMedia
-                        alt={id}
+                    <Box
                         key={id}
-                        {...photo}
-                    />
+                        sx={{
+                            position: "absolute",
+                            top:0,
+                            left:0,
+                            right:0,
+                            bottom:0,
+                            backgroundImage: `url(${imageSrc})`,
+                            backgroundSize: "cover"
+                        }}
+                    >
+
+                    </Box>
+                    // <ItemMedia
+                    //     alt={id}
+                    //     key={id}
+                    //     {...photo}
+                    // />
+
                 )
             })}
-            <CardHeader
-                title={place.name}
-            />
-            <CardContent>
-                <ItemActions
-                    ratings={{
-                        count: place.user_ratings_total,
-                        value: place.rating
-                    }}
-                />
-                <Typography >{place.vicinity}</Typography>
-                <ItemActions
-                    directions={directions}
-                />
-            </CardContent>
-            <CardActions
+            <Box
                 sx={{
-                    paddingLeft: 2,
-                    paddingBottom: 2
+                    zIndex: 1,
+                    position: "absolute",
+                    bottom:0,
+                    left:0,
+                    right:0,
+                    color: "white",
+                    backgroundColor: `rgba(0,0,0,0.4)`
                 }}
             >
-                <Button variant={"contained"} onClick={openDirectionsUrl}>Directions</Button>
-            </CardActions>
+                <CardHeader
+                    title={place.name}
+                />
+                <CardContent>
+                    <ItemActions
+                        ratings={{
+                            count: place.user_ratings_total,
+                            value: place.rating
+                        }}
+                    />
+                    <Typography >{place.vicinity}</Typography>
+                    <ItemActions
+                        directions={directions}
+                    />
+                </CardContent>
+                <CardActions
+                    sx={{
+                        paddingLeft: 2,
+                        paddingBottom: 2
+                    }}
+                >
+                    <Button variant={"contained"} onClick={openDirectionsUrl}>Directions</Button>
+                </CardActions>
+            </Box>
         </Card>
     )
 }
