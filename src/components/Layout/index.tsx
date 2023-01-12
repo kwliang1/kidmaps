@@ -18,8 +18,7 @@ const Index = (props: React.PropsWithChildren) => {
 	const containerStyles = isTabletOrMobile ? {
 		...defaultContainerStyle,
         flexDirection: "column",
-		        alignItems: "stretch",
-		        maxHeight: "100vh"
+		maxHeight: "100vh"
 	} : {
 		...defaultContainerStyle,
 	};
