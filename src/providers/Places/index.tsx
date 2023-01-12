@@ -18,6 +18,7 @@ interface PlacesAction {
 export const PlacesContext = createContext<PlaceSearchResult[]>([]);
 export const PlacesDispatchContext = createContext<React.Dispatch<PlacesAction>>((a:PlacesAction) => undefined);
 
+
 export function PlacesProvider(props: React.PropsWithChildren) {
     const {children} = props;
     const {map} = useContext(MapsCtx);
@@ -66,7 +67,7 @@ export function PlacesProvider(props: React.PropsWithChildren) {
         if(map){
             getDestinations();
         }
-    }, [map, filter])
+    }, [map, filter, location]);
 
     const [places, dispatch] = useReducer(
         placesReducer,

@@ -47,10 +47,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
         if(inView){
             getDistanceToDestination();
         }
-        // console.info(`${loggingTag} "${place.name}" view state: ${inView}`);
     }, [inView, getDistanceToDestination, loggingTag, place.name])
-
-    // console.info(`${loggingTag} place`, place);
 
     const openDirectionsUrl = useCallback(() => {
         if(place?.geometry?.location && location){
@@ -71,7 +68,6 @@ const PlacesListItem = (props: PlacesListItemProps) => {
         >
             {place?.photos && place.photos.map((photo, index) => {
                 const id = `${place.place_id}`;
-                console.info(`${loggingTag} photo`, photo);
                 const imageSrc = photo.getUrl({
                     maxHeight: window.innerHeight
                 })
@@ -88,14 +84,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
                             backgroundSize: "cover"
                         }}
                     >
-
                     </Box>
-                    // <ItemMedia
-                    //     alt={id}
-                    //     key={id}
-                    //     {...photo}
-                    // />
-
                 )
             })}
             <Box

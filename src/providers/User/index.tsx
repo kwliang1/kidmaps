@@ -55,15 +55,20 @@ class UserLocation {
 
             navigator.geolocation.getCurrentPosition(
                 (result: GeolocationPosition) => {
-                    console.info(`user location result`, result);
+                    // console.info(`user location result`, result);
                     const {coords} = result,
                         {latitude:lat, longitude:lng} = coords;
-                    console.info(`setting coordinates to lat:${lat} long:${lng}`);
+                    // console.info(`setting coordinates to lat:${lat} long:${lng}`);
                     this.permission.state = "granted";
                     const coordinates = {
                         lat,
                         lng
                     }
+                    //testing
+                    // const coordinates = {
+                    //     lat:40.7237284,
+                    //     lng:-74.0084371
+                    // }
                     this.current = coordinates;//this will update the class, as well as the local storage key to be retrieved at a later time 11.2.22 KL
                     resolve(coordinates);
                 },
@@ -134,6 +139,7 @@ const UserContextProvider = (props: React.PropsWithChildren) => {
     const [permission, setPermission] = useState<UserLocationPermission["state"]>(userLocation.permission.state);
     const [location, setLocation] = useState<UserContextInterface["location"]>(userLocation.coordinates);
 
+
     useEffect(() => {//only initial mount
         //getting status from browser
         userLocation.permission.status
@@ -144,6 +150,7 @@ const UserContextProvider = (props: React.PropsWithChildren) => {
             .catch(e => {
                 console.error(`${loggingTag} An error occurred`, e);
             });
+        requestPermission();
     }, []);
 
     // useEffect(() => {
