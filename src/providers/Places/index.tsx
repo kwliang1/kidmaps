@@ -66,7 +66,7 @@ export function PlacesProvider(props: React.PropsWithChildren) {
         if(map){
             getDestinations();
         }
-    }, [map])
+    }, [map, filter])
 
     const [places, dispatch] = useReducer(
         placesReducer,
