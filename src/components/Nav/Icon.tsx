@@ -1,10 +1,17 @@
-import {Map, ViewList} from "@mui/icons-material";
+import React from "react";
+import {Wc, Park} from "@mui/icons-material";
+import {PlaceFilter} from "../../providers/Navigation/filters";
 
-const NavIcon = (id:any) => {
-    if(id === "map"){
-        return(<Map/>)
+interface NavIconInterface extends React.PropsWithChildren {
+    id: PlaceFilter["id"];
+}
+const NavIcon = (props: NavIconInterface) => {
+    const {id} = props;
+
+    if(id === "bathrooms"){
+        return(<Wc/>)
     } else {
-        return(<ViewList/>)
+        return(<Park/>)
     }
 }
 

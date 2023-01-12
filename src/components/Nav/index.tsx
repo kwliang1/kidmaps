@@ -1,9 +1,12 @@
 import React, {useContext, useState} from "react";
 import {Drawer, List, Paper, BottomNavigation, BottomNavigationAction} from "@mui/material";
-import {views, View, ViewContext, ViewUpdateContext} from "../../providers/Navigation/views";
+import {views, View, ViewContext} from "../../providers/Navigation/views";
+import {PlaceFilter, placeFilters} from "../../providers/Navigation/filters";
 import {useTheme} from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery";
 import NavItem from "./Item";
+import NavIcon from "./Icon";
+import {NavContextProvider, NavCtx} from "../../providers/Navigation";
 
 interface NavProps {
     width?: number
@@ -16,11 +19,11 @@ const Nav = (props : NavProps) => {
 
     console.info(`${loggingTag} phone or tablet`, isPhoneOrTablet);
 
-    const {view, setView} = useContext(ViewContext);
+    const {filter, updateMode} = useContext(NavCtx);
     const navUpdated = (e:React.SyntheticEvent, value:View) => {
         // console.info(`${loggingTag}[val:${value}] event:`, e);
         console.info(`navUpdated new val:`, value);
-        setView(value);
+        updateMode(value);
     };
 
     if(isPhoneOrTablet){
@@ -37,16 +40,16 @@ const Nav = (props : NavProps) => {
             >
                 <BottomNavigation
                     showLabels
-                    value={view}
+                    value={filter}
                     onChange={navUpdated}
                 >
                     {
-                        views.map((view, index) => (
+                        placeFilters.map((filter, index) => (
                             <BottomNavigationAction
-                                key={view.id}
-                                label={view.label}
-                                icon={view.icon}
-                                value={view}
+                                key={filter.id}
+                                label={filter.name}
+                                icon={<NavIcon id={filter.id}/>}
+                                value={filter}
                             />
                         ))
                     }
@@ -73,10 +76,10 @@ const Nav = (props : NavProps) => {
             >
                 <List>
                     {
-                        views.map((view:View, index: number) => (
+                        placeFilters.map((filter:PlaceFilter, index: number) => (
                             <NavItem
-                                key={`${view.id}-${index}`}
-                                view={view}
+                                key={`${filter.id}-${index}`}
+                                value={filter}
                             />
                         ))
                     }

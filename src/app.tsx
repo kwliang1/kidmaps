@@ -3,6 +3,10 @@ import {UserCtx} from "./providers/User";
 import Home from "./views/Home";
 import Nav from "./components/Nav";
 import PlacesView from "./views/Places";
+import MapsProvider from "./providers/Maps";
+import {ViewProvider} from "./providers/Navigation/views";
+import {PlacesProvider} from "./providers/Places";
+import {NavContextProvider} from "./providers/Navigation";
 
 const App = () => {
 
@@ -12,10 +16,17 @@ const App = () => {
 
     if(permission === "granted"){
         return (
-            <>
-                <Nav/>
-                <PlacesView/>
-            </>
+            <NavContextProvider>
+                <ViewProvider>
+                    <PlacesProvider>
+                        <MapsProvider>
+                            <Nav/>
+                            <PlacesView/>
+                        </MapsProvider>
+                    </PlacesProvider>
+                </ViewProvider>
+            </NavContextProvider>
+
         )
     } else {
         return (

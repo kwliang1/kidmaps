@@ -31,8 +31,6 @@ const defaultViewContext = {
     setView: ()=>((a:View)=>a)
 }
 export const ViewContext = createContext<ViewContextInterface>(defaultViewContext);
-export const ViewUpdateContext = createContext<React.Dispatch<React.SetStateAction<View>>>(()=>(a:View) => a);
-
 
 interface ViewProviderInterface extends React.PropsWithChildren {
 }

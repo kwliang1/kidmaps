@@ -15,7 +15,6 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
     const currentModeID = useRef(filter.id);
     const [map, setMap] = useState();
     const [center, setCenter] = useState<Coords>();
-    const [destinations, setDestinations] = useState<google.maps.places.PlaceResult[]>();
     const [error, setError] = useState<google.maps.places.PlacesServiceStatus | null>(null);
 
     useEffect(() => {
@@ -43,7 +42,6 @@ const PlacesListView = (props: React.ComponentProps<any>) => {
         const search = filter.id === "bathrooms" ? new BathroomsSearch(map)
             : new PlacesSearch(map);
 
-        setDestinations([]);
         setError(null);
 
         search?.byKeyword({

@@ -31,7 +31,7 @@ const NavContextProvider = (props: React.PropsWithChildren) => {
     }, []);
 
     const contextValue = useMemo(() => ({
-        filter: filter,
+        filter,
         view,
         updateMode
     }), [filter, updateMode]);

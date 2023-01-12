@@ -13,8 +13,9 @@ interface MapsContextInterface {
 }
 
 const MapsContext = createContext<MapsContextInterface | null>(null);
-const MapsProvider = () => {
+const MapsProvider = (props: React.PropsWithChildren) => {
     const loggingTag = `[MapsProvider]`;
+    const {children} = props;
     const [libLoadStatus, setLibLoadStatus] = useState(MapsLibLoadStatuses.UNKNOWN);
     const [map, setMap] = useState(null);
     // @ts-ignore
@@ -38,6 +39,7 @@ const MapsProvider = () => {
             <KidsMap
                 onGoogleApiLoaded={handleGoogLoaded}
             />
+            {children}
         </MapsContext.Provider>
     )
 }
