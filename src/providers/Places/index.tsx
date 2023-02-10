@@ -4,11 +4,11 @@ import {MapsCtx, MapsLibLoadStatuses} from "../Maps";
 import {NavCtx} from "../Navigation";
 import {UserCtx} from "../User";
 
-enum PlacesActionType {
-    Add = 'add',
-    Replace = 'replace',
-    Empty = 'empty'
-}
+const PlacesActionType = {
+    Add: 'add',
+    Replace: 'replace',
+    Empty: 'empty'
+} as const;
 
 interface PlacesAction {
     type: string;

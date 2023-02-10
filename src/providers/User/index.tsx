@@ -23,7 +23,7 @@ const userLocation = new UserLocation();//initializing now so that we can refere
 const UserContextProvider = (props: React.PropsWithChildren) => {
     const loggingTag = `[UserContextProvider]`
     const {children} = props;
-    console.info(`${loggingTag} props`, props);
+    console.info(`${loggingTag} re-render`);
     const [permission, setPermission] = useState<UserLocationPermission["state"]>(userLocation.permission.state);
     const [location, setLocation] = useState<UserContextInterface["location"]>(userLocation.coordinates);
 
@@ -64,7 +64,7 @@ const UserContextProvider = (props: React.PropsWithChildren) => {
         permission,
         requestPermission,
         location
-    }
+    };
 
     return (
         <UserCtx.Provider value={context}>
