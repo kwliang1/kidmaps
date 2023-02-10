@@ -153,10 +153,6 @@ const UserContextProvider = (props: React.PropsWithChildren) => {
         requestPermission();
     }, []);
 
-    // useEffect(() => {
-    //     console.info(`${loggingTag} user permission updated.  current state: ${permission}`);
-    // }, [permission]);
-
     useEffect(() => {
         setPermission(userLocation.permission.state);
     }, [location]);
