@@ -48,7 +48,7 @@ const PlacesList = (props:PlacesListInterface) => {
                     )) : (
                         <SwiperSlide>
                             <VerticalCenter
-                                height={300}
+                                height={'100%'}
                             >
                                 {
                                     error ? (
