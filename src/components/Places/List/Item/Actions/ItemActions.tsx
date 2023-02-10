@@ -1,8 +1,7 @@
 import React from "react";
 import {Box} from "@mui/material";
-import ItemDistance from "./ItemDistance";
-import ItemRating from "./ItemRating";
-import {Ratings} from "./ItemAction";
+import ItemDistance from "../Distance";
+import ItemRating from "../Rating/ItemRating";
 
 
 interface ItemActionsInterface extends React.ComponentProps<any>{

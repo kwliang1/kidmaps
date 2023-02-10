@@ -1,5 +1,5 @@
 import React, {ReactElement} from "react";
-import ItemAction, {Action} from "./ItemAction";
+import ItemAction, {Action} from "../Action";
 import {DirectionsWalk} from "@mui/icons-material";
 
 const defaultDistanceDurationObj = {

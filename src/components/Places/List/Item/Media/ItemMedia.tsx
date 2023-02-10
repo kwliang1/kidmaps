@@ -1,5 +1,5 @@
 import React from "react";
-import {CardMedia, Box} from "@mui/material";
+import {CardMedia} from "@mui/material";
 import Image from "next/image";
 
 interface ItemMediaInterface extends React.ComponentProps<any>, google.maps.places.PlacePhoto {

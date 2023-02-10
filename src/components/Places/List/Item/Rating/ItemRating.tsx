@@ -1,5 +1,5 @@
 import React from "react";
-import ItemAction, {Ratings} from "./ItemAction";
+import Index, {Ratings} from "../Action";
 
 interface ItemRatingInterface extends React.ComponentProps<any>{
 
@@ -10,7 +10,7 @@ const ItemRating = (props:ItemRatingInterface) => {
     const {ratings} = props;
     const ratingsInfo = new Ratings(ratings?.count, ratings?.value);
     return (
-        <ItemAction
+        <Index
             info={ratingsInfo}
         />
     )

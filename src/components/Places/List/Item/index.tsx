@@ -1,10 +1,10 @@
 import React, {useEffect, useCallback, useContext, useState} from "react";
 import {Card, CardContent, CardHeader, CardActions, Typography, Box, Button} from "@mui/material";
-import ItemMedia from "./ItemMedia";
-import ItemActions from "./ItemActions";
+import ItemMedia from "./Media/ItemMedia";
+import ItemActions from "./Actions/ItemActions";
 import { useInView } from "react-intersection-observer";
-import {UserCtx} from "../../providers/User";
-import DirectionsUrl from "../../../utils/Directions";
+import {UserCtx} from "../../../../providers/User";
+import DirectionsUrl from "../../../../../utils/Directions";
 
 
 interface PlacesListItemProps extends React.ComponentProps<any>{
