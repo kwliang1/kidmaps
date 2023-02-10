@@ -8,6 +8,7 @@ import {PlacesContext} from "../../../providers/Places";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {PlaceSearchResult} from "../../../../utils/PlacesSearch";
 import "swiper/css";
+import EmptyResults from "../Status/Empty";
 
 interface PlacesListInterface extends React.ComponentProps<any> {
     error?: google.maps.places.PlacesServiceStatus | null;
@@ -55,6 +56,8 @@ const PlacesList = (props:PlacesListInterface) => {
                                         <PlacesSearchError
                                             error={error}
                                         />
+                                    ) : places.length === 0 ? (
+                                        <EmptyResults/>
                                     ) : (
                                         <PlacesPending/>
                                     )
