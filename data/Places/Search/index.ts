@@ -2,6 +2,7 @@
 
 import { Coords } from "google-map-react";
 import {PlaceSearchResult} from "../Results";
+import {BathroomSearchResult} from "../Results/Bathrooms";
 
 export interface SearchRequestOptions {
 	id: string;
@@ -25,9 +26,9 @@ export class PlacesSearch {
 		this.tag = tag ? tag : `[PlacesSearch]`;
 	}
 
-	byKeyword(requirements: SearchRequestOptions):Promise<PlaceSearchResult[] | null> {
+	byKeyword(requirements: SearchRequestOptions):Promise<PlaceSearchResult[] | BathroomSearchResult[] | null> {
 		const loggingTag = `${this.tag}[${requirements.keyword}]`;
-		return new Promise<PlaceSearchResult[] | null>((resolve, reject) => {
+		return new Promise<PlaceSearchResult[] | BathroomSearchResult[] | null>((resolve, reject) => {
 			this.pending = true;
 			try {
 				const service = new google.maps.places.PlacesService(this.map),

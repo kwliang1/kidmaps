@@ -1,6 +1,6 @@
 import {PlaceSearchResult} from "../index";
 
-interface BathroomSearchResult extends PlaceSearchResult {
+export interface BathroomSearchResult extends PlaceSearchResult {
     public: boolean;
     paid: boolean;
 }
