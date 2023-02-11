@@ -1,19 +1,16 @@
-import React, {useContext} from "react";
-import {UserCtx} from "./providers/User";
+import React from "react";
 import Home from "./views/Home";
 import Nav from "./components/Nav";
 import PlacesView from "./views/Places";
 import MapsProvider from "./providers/Maps";
+
 import {ViewProvider} from "./providers/Navigation/views";
 import {PlacesProvider} from "./providers/Places";
 import {NavContextProvider} from "./providers/Navigation";
+import {useLocationPermission} from "./providers/Location/LocationContext";
 
 const App = () => {
-
-    const {permission} = useContext(UserCtx);
-
-    console.info(`permission:`, permission);
-
+    const permission = useLocationPermission();
     if(permission === "granted"){
         return (
             <NavContextProvider>
@@ -26,7 +23,6 @@ const App = () => {
                     </MapsProvider>
                 </ViewProvider>
             </NavContextProvider>
-
         )
     } else {
         return (

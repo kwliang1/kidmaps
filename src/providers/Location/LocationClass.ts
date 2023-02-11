@@ -1,5 +1,5 @@
 import {Coords} from "google-map-react";
-import {UserLocationPermission} from "./Permission";
+import {UserLocationPermission} from "./LocationPermissionClass";
 
 export class UserLocation {
     private readonly tag: string;

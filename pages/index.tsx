@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Layout from "../src/components/Layout";
-import { UserContextProvider } from "../src/providers/User";
 import App from "../src/app";
+import {LocationProvider} from "../src/providers/Location";
 
 const Home: NextPage = () => {
     const loggingTag = `[Home]`;
@@ -9,11 +9,11 @@ const Home: NextPage = () => {
     console.info(`${loggingTag} render`);
 
     return (
-        <UserContextProvider>
-            <Layout>
+        <Layout>
+            <LocationProvider>
                 <App/>
-            </Layout>
-        </UserContextProvider>
+            </LocationProvider>
+        </Layout>
     )
 }
 

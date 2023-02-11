@@ -1,10 +1,7 @@
 import {Box} from "@mui/material";
-import React, {useContext} from "react";
-import Nav from "../Nav";
-import PlacesView from "../../views/Places";
+import React from "react";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {UserCtx} from "../../providers/User";
 
 const defaultContainerStyle = {
 	display: "flex",

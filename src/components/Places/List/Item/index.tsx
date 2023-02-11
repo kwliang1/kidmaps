@@ -1,10 +1,9 @@
 import React, {useEffect, useCallback, useContext, useState} from "react";
 import {Card, CardContent, CardHeader, CardActions, Typography, Box, Button} from "@mui/material";
-import ItemMedia from "./Media/ItemMedia";
 import ItemActions from "./Actions/ItemActions";
 import { useInView } from "react-intersection-observer";
-import {UserCtx} from "../../../../providers/User";
 import DirectionsUrl from "../../../../../data/Directions";
+import {useCoords} from "../../../../providers/Location/LocationContext";
 
 
 interface PlacesListItemProps extends React.ComponentProps<any>{
@@ -17,7 +16,7 @@ const PlacesListItem = (props: PlacesListItemProps) => {
     // console.info(`${loggingTag} props`, props);
 
     const {place} = props;
-    const {location} = useContext(UserCtx);
+    const location = useCoords();
     const [directions, setDirections] = useState<google.maps.DirectionsLeg | null>(null);
     const {ref, inView, entry} = useInView({
         threshold: 0,

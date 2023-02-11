@@ -1,11 +1,11 @@
-import React, {useCallback, useContext, useState} from "react";
-import {UserCtx} from "../../providers/User";
+import React, {useCallback, useState} from "react";
 import {Box, Button, CircularProgress, Typography} from "@mui/material";
+import {useLocationPermissionRequest} from "../../providers/Location/LocationContext";
 
 
 
 const PermissionPrompt = () => {
-    const {requestPermission} = useContext(UserCtx);
+    const requestPermission = useLocationPermissionRequest();
     const [status, setStatus] = useState("unknown");
     const getStarted = useCallback(() => {
         if(requestPermission){

@@ -2,9 +2,9 @@ import React, {createContext, useCallback, useContext, useEffect, useReducer} fr
 import {PlacesSearch} from "../../../data/Places/Search";
 import {MapsCtx} from "../Maps";
 import {NavCtx} from "../Navigation";
-import {UserCtx} from "../User";
 import {BathroomsSearch} from "../../../data/Places/Search/Bathrooms";
 import {PlaceSearchResult} from "../../../data/Places/Results";
+import {useCoords} from "../Location/LocationContext";
 
 const PlacesActionType = {
     Add: 'add',
@@ -24,7 +24,7 @@ export const PlacesDispatchContext = createContext<React.Dispatch<PlacesAction>>
 export function PlacesProvider(props: React.PropsWithChildren) {
     const {children} = props;
     const {map} = useContext(MapsCtx);
-    const {location} = useContext(UserCtx);
+    const location = useCoords();
     const {filter} = useContext(NavCtx);
 
     const getDestinations = useCallback( () => {

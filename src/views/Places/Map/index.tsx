@@ -2,7 +2,6 @@ import React, {useCallback, useContext, useEffect, useState} from "react";
 import {ChangeEventValue, Coords} from "google-map-react";
 
 import {Box} from "@mui/material";
-import {UserCtx} from "../../../providers/User";
 import {NavCtx} from "../../../providers/Navigation";
 
 import Map from "../../../components/Map";
@@ -12,13 +11,14 @@ import MapStatus from "../../../components/Map/Status";
 import {PlacesSearch} from "../../../../data/Places/Search";
 import {PlacesContext, PlacesDispatchContext} from "../../../providers/Places";
 import {BathroomsSearch} from "../../../../data/Places/Search/Bathrooms";
+import {useCoords} from "../../../providers/Location/LocationContext";
 
-interface MapViewProps extends React.ComponentProps<any>{
+interface MapViewProps extends React.PropsWithChildren {
 
 }
 
 const MapView = (props: MapViewProps) => {
-    const {location} = useContext(UserCtx);
+    const location = useCoords();
     const {filter} = useContext(NavCtx);
     // console.info(`current user mode`, mode);
     const places = useContext(PlacesContext);

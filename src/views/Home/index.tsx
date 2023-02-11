@@ -1,16 +1,13 @@
 import React, {useContext} from "react";
 import {Box, Typography} from "@mui/material";
 import VerticalCenter from "../../components/Utils/VerticalCenter";
-import {UserCtx} from "../../providers/User";
 import PermissionPrompt from "../../components/Permission";
+import {useLocationPermission} from "../../providers/Location/LocationContext";
 
-interface HomeComponentInterface {
-
-}
-const Home = (props: HomeComponentInterface) => {
-
-    const {permission} = useContext(UserCtx);
-
+const Home = (props: React.PropsWithChildren) => {
+    const loggingTag = `[Home]`;
+    const permission = useLocationPermission();
+    console.info(`${loggingTag} permission: ${permission}`);
     return (
         <Box
             sx={{
@@ -33,7 +30,6 @@ const Home = (props: HomeComponentInterface) => {
                 {
                     permission === "prompt" ? (
                         <PermissionPrompt/>
-
                     ) : (
                         <Typography>Unexpected permission: <b>{permission}</b></Typography>
                     )
