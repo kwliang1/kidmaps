@@ -4,7 +4,7 @@ import ItemMedia from "./Media/ItemMedia";
 import ItemActions from "./Actions/ItemActions";
 import { useInView } from "react-intersection-observer";
 import {UserCtx} from "../../../../providers/User";
-import DirectionsUrl from "../../../../../utils/Directions";
+import DirectionsUrl from "../../../../../data/Directions";
 
 
 interface PlacesListItemProps extends React.ComponentProps<any>{

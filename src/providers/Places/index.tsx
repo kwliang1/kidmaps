@@ -1,8 +1,10 @@
 import React, {createContext, useCallback, useContext, useEffect, useReducer} from "react";
-import {BathroomsSearch, PlaceSearchResult, PlacesSearch} from "../../../utils/PlacesSearch";
-import {MapsCtx, MapsLibLoadStatuses} from "../Maps";
+import {PlacesSearch} from "../../../data/Places/Search";
+import {MapsCtx} from "../Maps";
 import {NavCtx} from "../Navigation";
 import {UserCtx} from "../User";
+import {BathroomsSearch} from "../../../data/Places/Search/Bathrooms";
+import {PlaceSearchResult} from "../../../data/Places/Results";
 
 const PlacesActionType = {
     Add: 'add',
@@ -31,13 +33,11 @@ export function PlacesProvider(props: React.PropsWithChildren) {
             : new PlacesSearch(map);
 
         search?.byKeyword({
-            requestOptions : {
-                id: filter.id,
-                keyword: filter.keyword,
-                type: filter.type,
-                location: location,
-                rankBy: google.maps.places.RankBy.DISTANCE
-            }
+            id: filter.id,
+            keyword: filter.keyword,
+            type: filter.type,
+            location: location,
+            rankBy: google.maps.places.RankBy.DISTANCE
         })
             .then(( results: (PlaceSearchResult[] | null)) => {
                 if(

@@ -6,7 +6,7 @@ import PlacesSearchError from "../Status/Error";
 import VerticalCenter from "../../Utils/VerticalCenter";
 import {PlacesContext} from "../../../providers/Places";
 import {Swiper, SwiperSlide} from "swiper/react";
-import {PlaceSearchResult} from "../../../../utils/PlacesSearch";
+import {PlaceSearchResult} from "../../../../data/Places/Search";
 import "swiper/css";
 import EmptyResults from "../Status/Empty";
 

@@ -9,7 +9,7 @@ import Map from "../../../components/Map";
 import Marker from "../../../components/Map/Marker";
 import MapStatus from "../../../components/Map/Status";
 
-import {BathroomsSearch, PlacesSearch} from "../../../../utils/PlacesSearch";
+import {BathroomsSearch, PlacesSearch} from "../../../../data/Places/Search";
 import {PlacesContext, PlacesDispatchContext} from "../../../providers/Places";
 
 interface MapViewProps extends React.ComponentProps<any>{
