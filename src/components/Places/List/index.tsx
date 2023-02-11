@@ -6,9 +6,9 @@ import PlacesSearchError from "../Status/Error";
 import VerticalCenter from "../../Utils/VerticalCenter";
 import {PlacesContext} from "../../../providers/Places";
 import {Swiper, SwiperSlide} from "swiper/react";
-import {PlaceSearchResult} from "../../../../data/Places/Search";
 import "swiper/css";
 import EmptyResults from "../Status/Empty";
+import {PlaceSearchResult} from "../../../../data/Places/Results";
 
 interface PlacesListInterface extends React.ComponentProps<any> {
     error?: google.maps.places.PlacesServiceStatus | null;

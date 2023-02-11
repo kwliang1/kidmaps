@@ -9,8 +9,9 @@ import Map from "../../../components/Map";
 import Marker from "../../../components/Map/Marker";
 import MapStatus from "../../../components/Map/Status";
 
-import {BathroomsSearch, PlacesSearch} from "../../../../data/Places/Search";
+import {PlacesSearch} from "../../../../data/Places/Search";
 import {PlacesContext, PlacesDispatchContext} from "../../../providers/Places";
+import {BathroomsSearch} from "../../../../data/Places/Search/Bathrooms";
 
 interface MapViewProps extends React.ComponentProps<any>{
 
@@ -36,17 +37,14 @@ const MapView = (props: MapViewProps) => {
             console.info(`${loggingTag} search`, search);
 
             let mapViewSearchRequirements = {
-                requestOptions:{
-                    id: filter.id,
-                    keyword: filter.keyword,
-                    type: filter.type,
-                    bounds: map.getBounds()
-                }
+                id: filter.id,
+                keyword: filter.keyword,
+                type: filter.type,
+                bounds: map.getBounds()
             };
 
             search?.byKeyword(mapViewSearchRequirements)
                 .then(results => {
-                    console.info(`results`, results);
                     if(Array.isArray(results)) {
                         updatePlaces({
                             type: 'replace',
