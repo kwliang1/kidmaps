@@ -16,8 +16,10 @@ interface PlacesListInterface extends React.ComponentProps<any> {
 
 const PlacesList = (props:PlacesListInterface) => {
     const loggingTag = `[PlacesList]`;
-    const {error} = props;
     const places = useContext(PlacesContext);
+    //temporary
+    const error = null;
+
     console.info(`${loggingTag} places`, places);
     return (
         <Box
@@ -56,10 +58,10 @@ const PlacesList = (props:PlacesListInterface) => {
                                         <PlacesSearchError
                                             error={error}
                                         />
-                                    ) : places.length === 0 ? (
-                                        <EmptyResults/>
-                                    ) : (
+                                    ) : places === "pending" ? (
                                         <PlacesPending/>
+                                    ) : (
+                                        <EmptyResults/>
                                     )
                                 }
                             </VerticalCenter>

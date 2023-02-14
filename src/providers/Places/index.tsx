@@ -1,4 +1,4 @@
-import React, {createContext, useCallback, useContext, useEffect, useReducer} from "react";
+import React, {createContext, useCallback, useContext, useEffect, useReducer, useState} from "react";
 import {PlacesSearch} from "../../../data/Places/Search";
 import {MapsCtx} from "../Maps";
 import {NavCtx} from "../Navigation";
@@ -17,22 +17,54 @@ interface PlacesAction {
     places?: PlaceSearchResult[]
 }
 
-export const PlacesContext = createContext<PlaceSearchResult[]>([]);
+export const PlacesContext = createContext<PlaceSearchResult[] | string>([]);
 export const PlacesDispatchContext = createContext<React.Dispatch<PlacesAction>>((a:PlacesAction) => undefined);
 
+function placesReducer(places:PlaceSearchResult[], action:PlacesAction):PlaceSearchResult[]{
+    const {type} = action;
+    switch (type) {
+        case PlacesActionType.Add : {
+            return [
+                ...places,
+            ]
+        }
+        case PlacesActionType.Replace : {
+            const {places:newPlaces} = action;
+            if(newPlaces && newPlaces.length > 0)
+                return [...newPlaces];
+            else
+                return places;
+        }
+        case PlacesActionType.Empty : {
+            return [];
+        }
+        default: {
+            console.error(`Unknown action.type: ${type}`);
+            return places;
+
+        }
+    }
+}
 
 export function PlacesProvider(props: React.PropsWithChildren) {
     const {children} = props;
-    const {map} = useContext(MapsCtx);
+
     const location = useCoords();
-    const {filter} = useContext(NavCtx);
+    const [places, dispatch] = useReducer(
+        placesReducer,
+        initialPlaces
+    );
+    const [pending, setPending] = useState<boolean>(true);
+    const {map} = useContext(MapsCtx),
+        {filter} = useContext(NavCtx);
 
     const getDestinations = useCallback( () => {
         console.info(`[getDestinations] mode:`, filter);
+        setPending(true);
         const search = filter.id === "bathrooms" ? new BathroomsSearch(map)
             : new PlacesSearch(map);
 
-        search?.byKeyword({
+        search.byKeyword({
             id: filter.id,
             keyword: filter.keyword,
             type: filter.type,
@@ -54,14 +86,16 @@ export function PlacesProvider(props: React.PropsWithChildren) {
             })
             .catch(e => {
                 if(e === google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
-
                     dispatch({
                         type: "empty"
                     })
                 }
                 console.error(e);
             })
-    }, [location, filter.id, filter.keyword, filter.type, map]);
+            .finally(()=>{
+                setPending(false)
+            })
+    }, [location, filter, map]);
 
     useEffect(() => {
         if(map){
@@ -69,40 +103,12 @@ export function PlacesProvider(props: React.PropsWithChildren) {
         }
     }, [map, filter, location]);
 
-    const [places, dispatch] = useReducer(
-        placesReducer,
-        initialPlaces
-    )
     return (
-        <PlacesContext.Provider value={places}>
+        <PlacesContext.Provider value={pending? "pending" : places}>
             <PlacesDispatchContext.Provider value={dispatch}>
                 {children}
             </PlacesDispatchContext.Provider>
         </PlacesContext.Provider>
     )
 }
-
-function placesReducer(places:PlaceSearchResult[], action:PlacesAction):PlaceSearchResult[]{
-    switch (action.type) {
-        case PlacesActionType.Add : {
-            return [
-                ...places,
-            ]
-        }
-        case PlacesActionType.Replace : {
-            const {places:newPlaces} = action;
-            if(newPlaces)
-                return newPlaces;
-            else
-                return places;
-        }
-        case PlacesActionType.Empty : {
-            return [];
-        }
-        default: {
-            throw Error(`Unknown action: ${action.type}`);
-        }
-    }
-}
-
 const initialPlaces:PlaceSearchResult[] = [];
