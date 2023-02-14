@@ -42,10 +42,21 @@ export function LocationProvider(props: React.PropsWithChildren){
     useEffect(()=>{
         setPermissionState(state);
     }, [state])
+    const requestLocationPermission = async () => {
+        try{
+            const result = await requestLocation();//if this resolves, then we can set the permission state to "granted"
+            console.info(result);
+            setPermissionState("granted");
+            return result;
+        } catch(e){
+            console.error(e);
+            setPermissionState("denied");
+        }
+    }
     return(
         <LocationPermissionContext.Provider value={permissionState}>
-            <LocationPermissionRequestContext.Provider value={requestLocation}>
-                {state === "granted" ? (
+            <LocationPermissionRequestContext.Provider value={requestLocationPermission}>
+                {permissionState === "granted" ? (
                     <CoordsContext.Provider value={coords}>
                         {children}
                     </CoordsContext.Provider>

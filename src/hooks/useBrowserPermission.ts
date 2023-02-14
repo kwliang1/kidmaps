@@ -14,5 +14,5 @@ export default function useBrowserPermission(name: PermissionName){
             setPermissionState(state);
         }
     }, [value]);
-    return {state:permissionState, value}
+    return {state:permissionState, value, setPermissionState}
 }
