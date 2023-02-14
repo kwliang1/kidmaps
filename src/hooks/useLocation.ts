@@ -9,7 +9,7 @@ const defaultUserLocationCoords:Coords = {
 }
 
 const defaultGeoLocationOptions:PositionOptions = {
-    enableHighAccuracy: true,
+    enableHighAccuracy: false,
 }
 export default function useLocation(){
     const loggingTag = `[useLocation]`;
