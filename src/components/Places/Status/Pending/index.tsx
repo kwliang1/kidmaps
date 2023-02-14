@@ -1,7 +1,11 @@
 import React from "react";
 import {Box, CircularProgress, Typography} from "@mui/material";
 
-const Pending = (props: React.ComponentProps<any>) => {
+type PendingComponentProps = {
+    text: string
+} & React.ComponentProps<any>;
+const Pending = (props: PendingComponentProps) => {
+    const {text = 'Getting results...'} = props;
     return(
         <>
             <Box
@@ -9,7 +13,7 @@ const Pending = (props: React.ComponentProps<any>) => {
                     marginBottom: 3
                 }}
             >
-                <Typography>Getting results...</Typography>
+                <Typography>{text}</Typography>
             </Box>
             <CircularProgress
                 size={30}

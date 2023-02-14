@@ -1,32 +1,49 @@
 import React from "react";
-import Home from "./views/Home";
-import Nav from "./components/Nav";
-import PlacesView from "./views/Places";
-import MapsProvider from "./providers/Maps";
 
-import {ViewProvider} from "./providers/Navigation/views";
-import {PlacesProvider} from "./providers/Places";
-import {NavContextProvider} from "./providers/Navigation";
 import {useLocationPermission} from "./providers/Location/LocationContext";
+
+import Home from "./views/Home";
+import dynamic from "next/dynamic";
+import {Box, Typography} from "@mui/material";
+import Pending from "./components/Places/Status/Pending";
+
+const AppLoading = () => {
+    return(
+        <Box
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh'
+            }}
+        >
+            <Pending text={'Loading...'}/>
+        </Box>
+    )
+}
+const DynamicApp = dynamic(()=>{
+    return import('./AuthenticatedApp');
+},{
+    loading: () => <AppLoading/>
+})
+
+const DynamicHome = dynamic(() => {
+    return import('./views/Home');
+},{
+    loading: () => <AppLoading/>
+})
+
 
 const App = () => {
     const permission = useLocationPermission();
     if(permission === "granted"){
         return (
-            <NavContextProvider>
-                <ViewProvider>
-                    <MapsProvider>
-                        <PlacesProvider>
-                            <Nav/>
-                            <PlacesView/>
-                        </PlacesProvider>
-                    </MapsProvider>
-                </ViewProvider>
-            </NavContextProvider>
+            <DynamicApp/>
         )
     } else {
         return (
-            <Home/>
+            <DynamicHome/>
         )
     }
 }
