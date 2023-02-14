@@ -33,20 +33,21 @@ export default function useLocation(){
     }, [coords]);
 
     useEffect(()=>{
-        let watcher = navigator.geolocation.watchPosition(
-            (result) => {
-                updateCoords(result);
-            },
-            (error)=>{
-                console.error(`${loggingTag} Unable to watchPosition. Error:`, error);
-            },
-            defaultGeoLocationOptions
-        )
-        console.info(`${loggingTag} established listener w/ id: ${watcher}`);
-        return ()=>{
-            console.info(`${loggingTag} unmount! clearing watchPosition listener w/ id: ${watcher}`);
-            navigator.geolocation.clearWatch(watcher);
-        }
+        //KL commented because this should not trigger an update to the places list!
+        // let watcher = navigator.geolocation.watchPosition(
+        //     (result) => {
+        //         updateCoords(result);
+        //     },
+        //     (error)=>{
+        //         console.error(`${loggingTag} Unable to watchPosition. Error:`, error);
+        //     },
+        //     defaultGeoLocationOptions
+        // )
+        // console.info(`${loggingTag} established listener w/ id: ${watcher}`);
+        // return ()=>{
+        //     console.info(`${loggingTag} unmount! clearing watchPosition listener w/ id: ${watcher}`);
+        //     navigator.geolocation.clearWatch(watcher);
+        // }
     }, []);
 
     const requestLocation = async () : Promise<Coords> => {
