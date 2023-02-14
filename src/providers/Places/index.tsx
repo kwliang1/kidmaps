@@ -78,14 +78,21 @@ export function PlacesProvider(props: React.PropsWithChildren) {
                 ){
                     console.info(`Place Search results`, results);
                     // updateDestinations(results);
-                    dispatch({
-                        type: 'replace',
-                        places: results
-                    });
+                    if(results.length > 0){
+                        dispatch({
+                            type: 'replace',
+                            places: results
+                        });
+                    } else {
+                        dispatch({
+                            type: "empty"
+                        })
+                    }
                 }
             })
             .catch(e => {
                 if(e === google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
+                    console.info(`no results found!`);
                     dispatch({
                         type: "empty"
                     })

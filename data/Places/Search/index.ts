@@ -57,7 +57,6 @@ export class PlacesSearch {
 							}
 							return finalResult;
 						});
-
 						resolve(updatedResults);
 					} catch (e) {
 						reject(e);
