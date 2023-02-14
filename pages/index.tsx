@@ -10,14 +10,9 @@ const Home: NextPage = () => {
 
     return (
         <Layout>
-            {typeof window !== "undefined" ? (
-                <LocationProvider>
-                    <App/>
-                </LocationProvider>
-            ):(
+            <LocationProvider>
                 <App/>
-            )}
-
+            </LocationProvider>
         </Layout>
     )
 }
