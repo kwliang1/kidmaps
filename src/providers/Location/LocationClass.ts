@@ -1,5 +1,6 @@
 import {Coords} from "google-map-react";
 import {UserLocationPermission} from "./LocationPermissionClass";
+import {useLocalStorage} from "../../hooks/useStorage";
 
 export class UserLocation {
     private readonly tag: string;
@@ -31,6 +32,7 @@ export class UserLocation {
             lat: 0,
             lng: 0
         }
+
         try{
             if(typeof localStorage !== "undefined"){
                 const locationStr = localStorage.getItem(this._localstorage_key);
